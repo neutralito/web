@@ -852,12 +852,12 @@
 <div class="resultados-wrap" id="seccion-resultados">
   <div class="resultados-inner">
     <div class="resultados-vistas">
-      <div class="vista-tab active" onclick="cambiarVista('oficial', event)">Como lo publican</div>
+      <div class="vista-tab" onclick="cambiarVista('oficial', event)">Como lo publican</div>
       <div class="vista-tab" onclick="cambiarVista('real', event)">El censo completo</div>
     </div>
 
     <!-- VISTA A -->
-    <div class="resultados-datos-wrap visible" id="vista-oficial">
+    <div class="resultados-datos-wrap" id="vista-oficial">
       <p class="vista-descripcion">% sobre votos válidos. Abstención y nulo se mencionan aparte.</p>
       <div class="datos-clave">
         <div class="dato-clave"><span class="dato-clave-valor" id="of-participacion">—</span><span class="dato-clave-label">Participación</span></div>
@@ -1306,13 +1306,14 @@ function cambiarVista(vista, e) {
   e.target.classList.add('active');
   document.querySelectorAll('.resultados-datos-wrap').forEach(d => d.classList.remove('visible'));
   document.getElementById('vista-' + vista).classList.add('visible');
-  renderResultados();
+  if (vista === 'oficial') renderVistaOficial();
+  else renderVistaReal();
 }
 
 let chartDonutOficial = null;
 let chartDonutReal = null;
 
-function renderResultados() {
+function renderVistaOficial() {
   const d = datosElectorales;
   if (d.censo === 0) return;
 
@@ -1439,7 +1440,28 @@ function renderResultados() {
 
   barrasReal.innerHTML = todasFilas.map(f => f.html).join('');
 
-    // Donut Vista B
+  }
+
+function renderVistaReal() {
+  const d = datosElectorales;
+  if (d.censo === 0) return;
+  const abstencion = d.censo - d.votantes;
+  const fmt = v => v.toLocaleString('es-ES');
+  const pct = (v, base) => base > 0 ? ((v / base) * 100).toFixed(2) + '%' : '—';
+  const pctN = (v, base) => base > 0 ? (v / base * 100) : 0;
+  const coloresPartidos = ['#0056A2','#E3000F','#63BE21','#8B0000','#FF3399','#8B5E3C','#F5C400','#6A0DAD','#111111','#00A651','#1A1A1A','#FF6900','#004B87','#C8102E','#8B4513','#005F73','#CC0000','#006633','#F4A700','#3A3A6E','#5B7A3A','#4A7A5A','#6A5A3A','#3A5A6A','#5A3A6A'];
+  const pa = pctN(abstencion, d.censo);
+  const pb = pctN(d.votos_blanco, d.censo);
+  const pn = pctN(d.votos_nulos, d.censo);
+
+  // Datos clave Vista B
+  document.getElementById('re-censo-n').textContent = fmt(d.censo);
+  document.getElementById('re-votantes-n').textContent = fmt(d.votantes);
+  document.getElementById('re-votantes-pct').textContent = pct(d.votantes, d.censo);
+  document.getElementById('re-abstencion-n').textContent = fmt(abstencion);
+  document.getElementById('re-abstencion-pct').textContent = pct(abstencion, d.censo);
+
+  // Donut Vista B
   if (chartDonutReal) chartDonutReal.destroy();
   chartDonutReal = new Chart(document.getElementById('donut-real'), {
     type: 'doughnut',
