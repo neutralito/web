@@ -603,7 +603,9 @@
 
 <!-- FRASE + FILTRO PROVINCIAS -->
 <div class="guia-frase">
-  <p>Descubre qué partidos se presentan en tu provincia y qué proponen. Todas las candidaturas, sin filtros.</p>
+  <p>Presentamos todas las candidaturas, sin filtros.</p>
+  <p>Selecciona tu provincia para ver qué partidos se presentan y qué proponen.</p>
+  <p>El orden será aleatorio, aquí ningún partido tiene ventaja.</p>
 </div>
 <div class="filtro-wrap">
   <div class="filtro-tabs">
@@ -929,7 +931,9 @@ function renderPartidos() {
 
   const filtrados = provinciaActiva === 'todas'
     ? partidos
-    : partidos.filter(p => p.provincias.includes(provinciaActiva));
+    : partidos.filter(p => p.provincias.includes(provinciaActiva))
+              .slice()
+              .sort(() => Math.random() - 0.5);
 
   info.textContent = filtrados.length + ' candidatura' + (filtrados.length !== 1 ? 's' : '') + (provinciaActiva !== 'todas' ? ' en ' + provinciaActiva : ' en Aragón');
 
