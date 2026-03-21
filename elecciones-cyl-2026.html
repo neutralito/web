@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Elecciones Castilla y León 2026 — Neutralito</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -558,6 +559,225 @@
     .partidos-wrap { padding: 24px 16px 60px; }
     .partidos-grid { grid-template-columns: 1fr; }
   }
+
+  /* ── RESULTADOS ── */
+  .resultados-wrap {
+    display: none;
+    background: var(--off-white);
+    padding: 40px;
+    min-height: 400px;
+  }
+  .resultados-wrap.visible { display: block; }
+
+  .resultados-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .resultados-vistas {
+    display: flex;
+    gap: 0;
+    margin-bottom: 40px;
+    border-bottom: 2px solid rgba(0,0,0,0.08);
+  }
+
+  .vista-tab {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    padding: 14px 28px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+    user-select: none;
+  }
+  .vista-tab:hover { color: var(--black); }
+  .vista-tab.active { color: var(--black); font-weight: 700; border-bottom-color: var(--black); }
+
+  .vista-descripcion {
+    font-size: 13px;
+    color: var(--silver-dark);
+    margin-bottom: 32px;
+    font-style: italic;
+  }
+
+  .resultados-datos-wrap { display: none; }
+  .resultados-datos-wrap.visible { display: block; }
+
+  /* Datos clave */
+  .datos-clave {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 2px;
+    margin-bottom: 40px;
+  }
+
+  .dato-clave {
+    background: var(--white);
+    padding: 20px;
+    text-align: center;
+  }
+
+  .dato-clave-valor {
+    font-family: 'Oswald', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--black);
+    display: block;
+  }
+
+  .dato-clave-sub {
+    font-family: 'Oswald', sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--black);
+    display: block;
+  }
+  .dato-clave-sub.abstencion { color: var(--black); font-weight: 700; font-size: 36px; }
+
+  .dato-clave-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    margin-top: 4px;
+    display: block;
+  }
+
+  .dato-clave.destacado .dato-clave-valor { color: var(--black); }
+  .dato-clave.abstencion .dato-clave-valor { color: #8a8a8a; }
+  .dato-clave.blanco .dato-clave-valor { color: #aaaaaa; }
+  .dato-clave.nulo .dato-clave-valor { color: #cccccc; }
+
+  /* Barras */
+  .barras-titulo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    margin-bottom: 16px;
+  }
+
+  .barra-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .barra-siglas {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--black);
+    width: 80px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .barra-wrap {
+    flex: 1;
+    background: rgba(0,0,0,0.06);
+    height: 28px;
+    display: flex;
+    align-items: center;
+    overflow: visible;
+  }
+
+  .barra-fill {
+    height: 100%;
+    background: var(--black);
+    transition: width 0.6s ease;
+    min-width: 2px;
+    flex-shrink: 0;
+  }
+
+  .barra-color {
+    height: 100%;
+    transition: width 0.6s ease;
+    min-width: 2px;
+    flex-shrink: 0;
+  }
+
+  .barra-fill.abstencion { background: #8a8a8a; }
+  .barra-fill.blanco { background: #cccccc; }
+  .barra-fill.nulo { background: #e0e0e0; }
+
+  .barra-pct {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--white);
+    white-space: nowrap;
+  }
+
+  .barra-pct.dark { color: var(--black); }
+
+  .barra-pct-out {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .barra-pct-inline {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--black);
+    white-space: nowrap;
+    margin-left: 8px;
+    align-self: center;
+  }
+
+  .barra-pct-out-fixed {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--black);
+    white-space: nowrap;
+    padding-left: 10px;
+    flex-shrink: 0;
+  }
+
+  .barra-escanos {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--silver-dark);
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  .resultados-nota {
+    font-size: 12px;
+    color: var(--silver-dark);
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    font-style: italic;
+  }
+
+  .pendiente-aviso {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--silver-dark);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
 </style>
 </head>
 <body>
@@ -627,6 +847,59 @@
   <div class="partidos-info" id="partidos-info"></div>
   <div class="partidos-grid" id="partidos-grid"></div>
 </div>
+</div><!-- /seccion-guia -->
+
+<!-- RESULTADOS -->
+<div class="resultados-wrap" id="seccion-resultados">
+  <div class="resultados-inner">
+    <div class="resultados-vistas">
+      <div class="vista-tab active" onclick="cambiarVista('oficial', event)">Como lo publican</div>
+      <div class="vista-tab" onclick="cambiarVista('real', event)">El censo completo</div>
+    </div>
+
+    <!-- VISTA A -->
+    <div class="resultados-datos-wrap visible" id="vista-oficial">
+      <p class="vista-descripcion">% sobre votos válidos. Abstención y nulo se mencionan aparte.</p>
+      <div class="datos-clave">
+        <div class="dato-clave"><span class="dato-clave-valor" id="of-participacion">—</span><span class="dato-clave-label">Participación</span></div>
+        <div class="dato-clave abstencion"><span class="dato-clave-valor" id="of-abstencion">—</span><span class="dato-clave-label">Abstención</span></div>
+        <div class="dato-clave blanco"><span class="dato-clave-valor" id="of-blanco">—</span><span class="dato-clave-label">Voto en blanco</span></div>
+        <div class="dato-clave nulo"><span class="dato-clave-valor" id="of-nulo">—</span><span class="dato-clave-label">Voto nulo</span></div>
+      </div>
+      <p class="barras-titulo">Resultado por partido — % sobre votos válidos</p>
+      <div id="barras-oficial"></div>
+      <div style="max-width:320px;margin:32px auto 0"><canvas id="donut-oficial"></canvas></div>
+      <p class="resultados-nota">Los partidos suman 100% sobre votos válidos, incluyendo el voto en blanco. Abstención y nulo aparecen como dato informativo.</p>
+    </div>
+
+    <!-- VISTA B -->
+    <div class="resultados-datos-wrap" id="vista-real">
+      <p class="vista-descripcion">% sobre el censo electoral. Todo cuenta — partidos, abstención, blanco y nulo.</p>
+      <div class="datos-clave">
+        <div class="dato-clave">
+          <span class="dato-clave-valor" id="re-censo-n">—</span>
+          <span class="dato-clave-label">Censo electoral</span>
+        </div>
+        <div class="dato-clave">
+          <span class="dato-clave-sub" id="re-votantes-pct">—</span>
+          <span class="dato-clave-valor" id="re-votantes-n" style="font-size:16px;color:var(--silver-dark)">—</span>
+          <span class="dato-clave-label">Participación</span>
+        </div>
+        <div class="dato-clave abstencion">
+          <span class="dato-clave-sub abstencion" id="re-abstencion-pct">—</span>
+          <span class="dato-clave-valor" id="re-abstencion-n" style="font-size:16px;color:var(--silver-dark)">—</span>
+          <span class="dato-clave-label">Abstención</span>
+        </div>
+      </div>
+      <p class="barras-titulo">Resultado sobre el censo</p>
+      <div id="barras-real"></div>
+      <div style="max-width:320px;margin:32px auto 0"><canvas id="donut-real"></canvas></div>
+      <p class="resultados-nota">A diferencia de la vista anterior, aquí mostramos a todos los ciudadanos con derecho a voto, no los que votaron. Por eso los partidos no suman 100%. Hemos incluido abstención y voto nulo.</p>
+    </div>
+
+    <div class="pendiente-aviso" id="aviso-pendiente" style="display:none">Pendiente de datos electorales</div>
+  </div>
+</div>
 
 <footer>
     <a href="index.html" class="footer-marca" style="text-decoration:none;">
@@ -647,6 +920,47 @@
   </footer>
 
 <script>
+// ── DATOS ELECTORALES ──
+// Rellena estos datos cuando tengas los resultados oficiales
+// ── DATOS ELECTORALES — Elecciones Autonómicas CyL 2026 ──
+var datosElectorales = {
+  censo: 1904711,
+  votantes: 1251408,
+  votos_validos: 1235056,
+  votos_nulos: 16352,
+  votos_blanco: 18312,
+  partidos: [
+    { siglas: "PP",           votos: 438096, escanos: 0 },
+    { siglas: "PSOE",         votos: 379703, escanos: 0 },
+    { siglas: "VOX",          votos: 233757, escanos: 0 },
+    { siglas: "UPL",          votos: 53805,  escanos: 0 },
+    { siglas: "IU-MS-VQ",     votos: 27605,  escanos: 0 },
+    { siglas: "SALF",         votos: 17351,  escanos: 0 },
+    { siglas: "XAV",          votos: 11307,  escanos: 0 },
+    { siglas: "Podemos-AV",   votos: 9225,   escanos: 0 },
+    { siglas: "SY",           votos: 8728,   escanos: 0 },
+    { siglas: "PACMA",        votos: 5027,   escanos: 0 },
+    { siglas: "Escaños en Blanco",           votos: 4762,   escanos: 0 },
+    { siglas: "Cs",           votos: 4320,   escanos: 0 },
+    { siglas: "NUEVECYL",     votos: 4207,   escanos: 0 },
+    { siglas: "VBM",          votos: 3543,   escanos: 0 },
+    { siglas: "PCAS-TC",      votos: 3051,   escanos: 0 },
+    { siglas: "C.Bierzo",     votos: 1946,   escanos: 0 },
+    { siglas: "PCTE",         votos: 1688,   escanos: 0 },
+    { siglas: "VP",           votos: 1641,   escanos: 0 },
+    { siglas: "M+J",          votos: 1555,   escanos: 0 },
+    { siglas: "España Vaciada", votos: 2991, escanos: 0 },
+  { siglas: "PREPAL",          votos: 869,  escanos: 0 },
+  { siglas: "FE-JONS",         votos: 789,  escanos: 0 },
+  { siglas: "ALANTRE",         votos: 383,  escanos: 0 },
+  { siglas: "PANCAL-URCI",     votos: 289,  escanos: 0 },
+  { siglas: "SAE",             votos: 106,  escanos: 0 }
+  ]
+};
+// Nota: "Otros" agrupa AD-EV(977), MEV(932), PREPAL(869), FE-JONS(789), EV+EspañaVaciada(1082), ALANTRE(383), PANCAL(289), SAE(106)
+// Escaños pendientes de datos oficiales
+
+
 const partidos = [
   {
     siglas: "PP",
@@ -703,7 +1017,7 @@ const partidos = [
     logo: "logo_salf.webp"
   },
   {
-    siglas: "EB",
+    siglas: "Escaños en Blanco",
     nombre: "Escaños en Blanco para dejar escaños vacíos",
     programa: "https://escanos.org/conocenos/programa-electoral-de-escanos-en-blanco/",
     provincias: ["Burgos", "León", "Palencia", "Salamanca", "Segovia", "Soria", "Valladolid", "Zamora", "Ávila"],
@@ -935,7 +1249,7 @@ function renderPartidos() {
               .slice()
               .sort(() => Math.random() - 0.5);
 
-  info.textContent = filtrados.length + ' candidatura' + (filtrados.length !== 1 ? 's' : '') + (provinciaActiva !== 'todas' ? ' en ' + provinciaActiva : ' en Aragón');
+  info.textContent = filtrados.length + ' candidatura' + (filtrados.length !== 1 ? 's' : '') + (provinciaActiva !== 'todas' ? ' en ' + provinciaActiva : ' en Castilla y León');
 
   grid.innerHTML = filtrados.map(p => {
     const logoImg = `<img class="partido-logo" src="logos/${p.logo}" alt="${p.siglas}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
@@ -981,6 +1295,190 @@ function actualizarContadores() {
     if (el) el.textContent = n;
   });
 }
+
+actualizarContadores();
+renderPartidos();
+
+
+function cambiarVista(vista, e) {
+  document.querySelectorAll('.vista-tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  document.querySelectorAll('.resultados-datos-wrap').forEach(d => d.classList.remove('visible'));
+  document.getElementById('vista-' + vista).classList.add('visible');
+  renderResultados();
+}
+
+let chartDonutOficial = null;
+let chartDonutReal = null;
+
+function renderResultados() {
+  const d = datosElectorales;
+  if (d.censo === 0) return;
+
+  document.getElementById('aviso-pendiente').style.display = 'none';
+
+  const abstencion = d.censo - d.votantes;
+  const fmt = v => v.toLocaleString('es-ES');
+  const pct = (v, base) => base > 0 ? ((v / base) * 100).toFixed(2) + '%' : '—';
+  const pctN = (v, base) => base > 0 ? (v / base * 100) : 0;
+  const coloresPartidos = ['#0056A2','#E3000F','#63BE21','#8B0000','#FF3399','#8B5E3C','#F5C400','#6A0DAD','#111111','#00A651','#1A1A1A','#FF6900','#004B87','#C8102E','#8B4513','#005F73','#CC0000','#006633','#F4A700','#3A3A6E','#5B7A3A','#4A7A5A','#6A5A3A','#3A5A6A','#5A3A6A'];
+
+  // ── VISTA A ──
+  document.getElementById('of-participacion').textContent = pct(d.votantes, d.censo);
+  document.getElementById('of-abstencion').textContent = pct(abstencion, d.censo);
+  document.getElementById('of-blanco').textContent = pct(d.votos_blanco, d.votos_validos);
+  document.getElementById('of-nulo').textContent = pct(d.votos_nulos, d.votantes);
+
+  // Barras Vista A
+  const barrasOficial = document.getElementById('barras-oficial');
+  barrasOficial.innerHTML = d.partidos.map((p, i) => {
+    const v = pctN(p.votos, d.votos_validos);
+    const color = coloresPartidos[i] || '#999';
+    return `<div class="barra-row">
+      <span class="barra-siglas">${p.siglas}</span>
+      <div class="barra-wrap">
+        <div class="barra-fill" style="width:${v}%;background:${color}"></div>
+        <span class="barra-pct-inline">${v.toFixed(2)}% · ${fmt(p.votos)}</span>
+      </div>
+      <span class="barra-escanos">${p.escanos > 0 ? p.escanos + ' esc.' : ''}</span>
+    </div>`;
+  }).join('');
+
+  // Donut Vista A
+  if (chartDonutOficial) chartDonutOficial.destroy();
+  chartDonutOficial = new Chart(document.getElementById('donut-oficial'), {
+    type: 'doughnut',
+    data: {
+      labels: [...d.partidos.map(p => p.siglas), 'Blanco'],
+      datasets: [{
+        data: [...d.partidos.map(p => pctN(p.votos, d.votos_validos).toFixed(2)), pctN(d.votos_blanco, d.votos_validos).toFixed(2)],
+        backgroundColor: [...coloresPartidos.slice(0, d.partidos.length), '#e0e0e0'],
+        borderWidth: 2,
+        borderColor: '#f5f5f2'
+      }]
+    },
+    options: {
+      cutout: '65%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const idx = ctx.dataIndex;
+              const votos = idx < d.partidos.length ? fmt(d.partidos[idx].votos) : fmt(d.votos_blanco);
+              return ` ${ctx.label}: ${ctx.raw}% · ${votos} votos`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // ── VISTA B ──
+  document.getElementById('re-censo-n').textContent = fmt(d.censo);
+  document.getElementById('re-votantes-n').textContent = fmt(d.votantes);
+  document.getElementById('re-votantes-pct').textContent = pct(d.votantes, d.censo);
+  document.getElementById('re-abstencion-n').textContent = fmt(abstencion);
+  document.getElementById('re-abstencion-pct').textContent = pct(abstencion, d.censo);
+
+  // Barras Vista B
+  const barrasReal = document.getElementById('barras-real');
+  const filasPartidos = d.partidos.map((p, i) => {
+    const v = pctN(p.votos, d.censo);
+    const color = coloresPartidos[i] || '#999';
+    return `<div class="barra-row">
+      <span class="barra-siglas">${p.siglas}</span>
+      <div class="barra-wrap">
+        <div class="barra-fill" style="width:${v}%;background:${color}"></div>
+        <span class="barra-pct-inline">${v.toFixed(2)}% · ${fmt(p.votos)}</span>
+      </div>
+      <span class="barra-escanos">${p.escanos > 0 ? p.escanos + ' esc.' : ''}</span>
+    </div>`;
+  }).join('');
+
+  const pa = pctN(abstencion, d.censo);
+  const pb = pctN(d.votos_blanco, d.censo);
+  const pn = pctN(d.votos_nulos, d.censo);
+
+  // Todas las filas ordenadas por % descendente
+  const todasFilas = [
+    ...d.partidos.map((p, i) => ({
+      pct: pctN(p.votos, d.censo),
+      html: `<div class="barra-row">
+        <span class="barra-siglas">${p.siglas}</span>
+        <div class="barra-wrap">
+          <div class="barra-color" style="width:${pctN(p.votos, d.censo)}%;background:${coloresPartidos[i] || '#999'}"></div>
+          <span class="barra-pct-out-fixed">${pctN(p.votos, d.censo).toFixed(2)}% · ${fmt(p.votos)}</span>
+        </div>
+        <span class="barra-escanos">${p.escanos > 0 ? p.escanos + ' esc.' : ''}</span>
+      </div>`
+    })),
+    { pct: pa, html: `<div class="barra-row">
+      <span class="barra-siglas" >Abstención</span>
+      <div class="barra-wrap">
+        <div class="barra-color" style="width:${pa}%;background:#8a8a8a"></div>
+        <span class="barra-pct-out-fixed">${pa.toFixed(2)}% · ${fmt(abstencion)}</span>
+      </div><span class="barra-escanos"></span>
+    </div>` },
+    { pct: pb, html: `<div class="barra-row">
+      <span class="barra-siglas" >Blanco</span>
+      <div class="barra-wrap">
+        <div class="barra-color" style="width:${pb}%;background:#cccccc"></div>
+        <span class="barra-pct-out-fixed">${pb.toFixed(2)}% · ${fmt(d.votos_blanco)}</span>
+      </div><span class="barra-escanos"></span>
+    </div>` },
+    { pct: pn, html: `<div class="barra-row">
+      <span class="barra-siglas" >Nulo</span>
+      <div class="barra-wrap">
+        <div class="barra-color" style="width:${pn}%;background:#e0e0e0"></div>
+        <span class="barra-pct-out-fixed">${pn.toFixed(2)}% · ${fmt(d.votos_nulos)}</span>
+      </div><span class="barra-escanos"></span>
+    </div>` }
+  ].sort((a, b) => b.pct - a.pct);
+
+  barrasReal.innerHTML = todasFilas.map(f => f.html).join('');
+
+    // Donut Vista B
+  if (chartDonutReal) chartDonutReal.destroy();
+  chartDonutReal = new Chart(document.getElementById('donut-real'), {
+    type: 'doughnut',
+    data: {
+      labels: [...d.partidos.map(p => p.siglas), 'Blanco', 'Nulo', 'Abstención'],
+      datasets: [{
+        data: [
+          ...d.partidos.map(p => pctN(p.votos, d.censo).toFixed(2)),
+          pb.toFixed(2), pn.toFixed(2), pa.toFixed(2)
+        ],
+        backgroundColor: [
+          ...coloresPartidos.slice(0, d.partidos.length),
+          '#e0e0e0', '#cccccc', '#8a8a8a'
+        ],
+        borderWidth: 2,
+        borderColor: '#f5f5f2'
+      }]
+    },
+    options: {
+      cutout: '65%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const idx = ctx.dataIndex;
+              let votos;
+              if (idx < d.partidos.length) votos = fmt(d.partidos[idx].votos);
+              else if (idx === d.partidos.length) votos = fmt(d.votos_blanco);
+              else if (idx === d.partidos.length + 1) votos = fmt(d.votos_nulos);
+              else votos = fmt(abstencion);
+              return ` ${ctx.label}: ${ctx.raw}% · ${votos} votos`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
 
 actualizarContadores();
 renderPartidos();
