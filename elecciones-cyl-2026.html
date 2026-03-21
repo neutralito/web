@@ -1296,8 +1296,10 @@ function actualizarContadores() {
   });
 }
 
-actualizarContadores();
-renderPartidos();
+document.addEventListener("DOMContentLoaded", function() {
+  actualizarContadores();
+  renderPartidos();
+});
 
 
 function cambiarVista(vista, e) {
@@ -1480,8 +1482,6 @@ function renderResultados() {
 }
 
 
-actualizarContadores();
-renderPartidos();
 </script>
 </body>
 </html>
