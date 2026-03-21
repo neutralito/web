@@ -1,0 +1,354 @@
+/* ============================================
+   NEUTRALITO — Design System
+   Versión 1.0 · Marzo 2026
+   Fuentes: Oswald, IBM Plex Sans, IBM Plex Mono
+   Google Fonts import:
+   https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap
+============================================ */
+
+/* ── VARIABLES ── */
+:root {
+  --white:        #ffffff;
+  --off-white:    #f5f5f2;
+  --silver-light: #e8e8e4;
+  --silver:       #C0C0C0;
+  --silver-dark:  #8a8a8a;
+  --black:        #111111;
+  --black-soft:   #333333;
+  --gold:         #FFD700;
+  --gold-dark:    #CC7722;
+  --blue:         #2F3A4A;
+  --teal:         #1B4D4F;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── TIPOGRAFÍA ── */
+
+/* Títulos principales — Oswald */
+.titulo-principal {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(48px, 9vw, 100px);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--black);
+  line-height: 1;
+}
+
+/* Títulos de sección — Oswald */
+.titulo-seccion {
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--black);
+  margin-bottom: 32px;
+}
+
+/* Títulos de página interior — Oswald */
+.titulo-pagina {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--black);
+  line-height: 1.1;
+  margin-bottom: 32px;
+}
+
+/* Texto cuerpo — IBM Plex Sans */
+.texto {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 15.5px;
+  font-weight: 400;
+  color: rgba(17,17,17,0.88);
+  line-height: 1.85;
+  max-width: 660px;
+  margin-bottom: 20px;
+}
+
+/* Texto secundario / subtítulo */
+.texto-secundario {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(17,17,17,0.6);
+  line-height: 1.7;
+}
+
+/* Etiquetas / monospace — IBM Plex Mono */
+.etiqueta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--silver-dark);
+}
+
+/* Tagline */
+.tagline {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: clamp(13px, 1.5vw, 16px);
+  font-weight: 300;
+  color: var(--silver-dark);
+  letter-spacing: 0.04em;
+}
+
+/* ── NAVEGACIÓN ── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 300;
+  display: flex;
+  align-items: stretch;
+  height: 60px;
+  background: var(--white);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+  cursor: pointer;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(0,0,0,0.08);
+  text-decoration: none;
+}
+
+.nav-brand img { height: 28px; width: auto; object-fit: contain; }
+
+.nav-brand-text {
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--black);
+}
+
+.nav-tabs { display: flex; flex: 1; overflow-x: auto; }
+
+.nav-tab {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver-dark);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.nav-tab:hover { color: var(--black); }
+.nav-tab.active { color: var(--black); border-bottom-color: var(--black); }
+
+.nav-social {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 20px;
+  border-left: 1px solid rgba(0,0,0,0.08);
+  flex-shrink: 0;
+}
+
+.nav-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: var(--silver-dark);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-social-link:hover { color: var(--black); }
+.nav-social-link svg { pointer-events: none; }
+
+/* ── PÁGINAS / TABS ── */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.25s ease; }
+
+/* ── SECCIONES ── */
+.seccion {
+  padding: 80px 52px;
+  border-top: 1px solid rgba(0,0,0,0.07);
+}
+.seccion.bg-blanco    { background: var(--white); }
+.seccion.bg-gris      { background: var(--off-white); }
+.seccion.bg-plateado  { background: var(--silver-light); }
+.seccion.bg-negro     { background: var(--black); }
+
+.seccion-inner { max-width: 820px; margin: 0 auto; }
+.seccion-inner-wide { max-width: 960px; margin: 0 auto; }
+.seccion-inner-narrow { max-width: 660px; margin: 0 auto; }
+
+/* ── DIVISOR ── */
+.divisor {
+  width: 40px;
+  height: 1px;
+  background: var(--silver);
+  margin-bottom: 36px;
+}
+
+/* ── BADGE ── */
+.badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--silver-dark);
+  border: 1px solid rgba(0,0,0,0.1);
+  display: inline-block;
+  padding: 4px 10px;
+  margin-bottom: 28px;
+}
+
+/* ── BOTONES ── */
+.btn {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 13px 32px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.2s, transform 0.15s;
+  cursor: pointer;
+  border: none;
+}
+.btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+.btn-negro  { background: var(--black); color: var(--white); }
+.btn-blanco { background: var(--white); color: var(--black); }
+.btn-outline {
+  background: transparent;
+  color: var(--black);
+  border: 1.5px solid rgba(0,0,0,0.2);
+}
+.btn-outline:hover { border-color: var(--black); opacity: 1; }
+
+/* ── TARJETAS ── */
+.card {
+  background: var(--white);
+  border: 1px solid rgba(0,0,0,0.07);
+  padding: 28px;
+  transition: border-color 0.2s, transform 0.15s;
+}
+.card:hover {
+  border-color: rgba(0,0,0,0.18);
+  transform: translateY(-1px);
+}
+
+.card-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  max-width: 660px;
+}
+
+.card-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  background: rgba(0,0,0,0.06);
+}
+
+/* ── MANIFIESTO ── */
+.manifiesto-frase {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(20px, 3vw, 30px);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0.03em;
+  color: var(--silver);
+  margin-bottom: 20px;
+}
+.manifiesto-frase strong { color: var(--white); font-weight: 600; }
+
+/* ── FOOTER ── */
+.footer {
+  background: var(--off-white);
+  border-top: 1px solid rgba(0,0,0,0.07);
+  padding: 40px 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-marca { display: flex; align-items: center; gap: 8px; }
+.footer-marca img { height: 22px; opacity: 0.25; }
+.footer-marca-text {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver-dark);
+}
+
+.footer-social { display: flex; gap: 20px; align-items: center; }
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--silver-dark);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.social-link:hover { color: var(--black); }
+
+/* ── ANIMACIONES ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .nav-tabs .nav-tab { padding: 0 14px; font-size: 10px; }
+  .nav-brand { padding: 0 16px; }
+  .seccion { padding-left: 24px; padding-right: 24px; }
+  .footer  { padding-left: 24px; padding-right: 24px; flex-direction: column; align-items: flex-start; }
+  .card-grid-2 { grid-template-columns: 1fr; }
+  .card-grid-3 { grid-template-columns: 1fr; }
+}
