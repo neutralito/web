@@ -1019,15 +1019,15 @@ var datosElectorales = {
   votos_nulos: 16352,
   votos_blanco: 18312,
   partidos: [
-    { siglas: "PP",           votos: 438096, escanos: 0 },
-    { siglas: "PSOE",         votos: 379703, escanos: 0 },
-    { siglas: "VOX",          votos: 233757, escanos: 0 },
-    { siglas: "UPL",          votos: 53805,  escanos: 0 },
+    { siglas: "PP",           votos: 438096, escanos: 33 },
+    { siglas: "PSOE",         votos: 379703, escanos: 30 },
+    { siglas: "VOX",          votos: 233757, escanos: 14 },
+    { siglas: "UPL",          votos: 53805,  escanos: 3 },
     { siglas: "IU-MS-VQ",     votos: 27605,  escanos: 0 },
     { siglas: "SALF",         votos: 17351,  escanos: 0 },
-    { siglas: "XAV",          votos: 11307,  escanos: 0 },
+    { siglas: "XAV",          votos: 11307,  escanos: 1 },
     { siglas: "Podemos-AV",   votos: 9225,   escanos: 0 },
-    { siglas: "SY",           votos: 8728,   escanos: 0 },
+    { siglas: "SY",           votos: 8728,   escanos: 1 },
     { siglas: "PACMA",        votos: 5027,   escanos: 0 },
     { siglas: "Escaños en Blanco",           votos: 4762,   escanos: 0 },
     { siglas: "Cs",           votos: 4320,   escanos: 0 },
@@ -1047,7 +1047,7 @@ var datosElectorales = {
   ]
 };
 // Nota: "Otros" agrupa AD-EV(977), MEV(932), PREPAL(869), FE-JONS(789), EV+EspañaVaciada(1082), ALANTRE(383), PANCAL(289), SAE(106)
-// Escaños pendientes de datos oficiales
+// Escaños definitivos (15/03/2026): PP 33, PSOE 30, VOX 14, UPL 3, XAV 1, SY 1 — Total: 82
 
 
 const partidos = [
@@ -1388,6 +1388,20 @@ function actualizarContadores() {
 document.addEventListener("DOMContentLoaded", function() {
   actualizarContadores();
   renderPartidos();
+  // Abrir Resultados por defecto
+  const guia = document.getElementById('seccion-guia');
+  const resultados = document.getElementById('seccion-resultados');
+  guia.style.display = 'none';
+  resultados.classList.add('visible');
+  document.querySelectorAll('.apartado-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.apartado-tab[onclick*="resultados"]').classList.add('active');
+  // Activar y renderizar vista oficial
+  document.querySelectorAll('.vista-tab').forEach(t => t.classList.remove('active'));
+  const primeraVista = document.querySelector('.vista-tab');
+  if (primeraVista) primeraVista.classList.add('active');
+  document.querySelectorAll('.resultados-datos-wrap').forEach(d => d.classList.remove('visible'));
+  document.getElementById('vista-oficial').classList.add('visible');
+  renderVistaOficial();
 });
 
 
