@@ -762,6 +762,31 @@
     flex-shrink: 0;
   }
 
+  @media (max-width: 600px) {
+    .barra-row {
+      flex-wrap: wrap;
+      gap: 4px 8px;
+    }
+    .barra-siglas {
+      width: 64px;
+    }
+    .barra-wrap {
+      flex: 1;
+      min-width: 0;
+    }
+    .barra-pct-inline,
+    .barra-pct-out-fixed {
+      font-size: 10px;
+      margin-left: 4px;
+    }
+    .barra-escanos {
+      width: auto;
+      margin-left: 72px;
+      font-size: 10px;
+      color: var(--silver-dark);
+    }
+  }
+
   .resultados-nota {
     font-size: 12px;
     color: var(--silver-dark);
@@ -841,6 +866,55 @@
   }
   .nav-mobile-item:hover { color: var(--black); background: var(--off-white); }
   .nav-mobile-item.active { color: var(--black); font-weight: 700; }
+
+
+  /* ── TABLA ESCAÑOS ── */
+  .esc-bloque {
+    margin-bottom: 36px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .esc-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 560px;
+  }
+  .esc-fila {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .esc-siglas {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--black);
+    width: 80px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .esc-barra-wrap {
+    flex: 1;
+    background: rgba(0,0,0,0.06);
+    height: 22px;
+    display: flex;
+    align-items: stretch;
+  }
+  .esc-barra {
+    min-width: 2px;
+    transition: width 0.5s ease;
+  }
+  .esc-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--black);
+    width: 28px;
+    flex-shrink: 0;
+    text-align: left;
+  }
 
   @media (max-width: 768px) {
     .nav-tabs { display: none; }
@@ -945,6 +1019,9 @@
       <div class="vista-tab" onclick="cambiarVista('oficial', event)">Como lo publican</div>
       <div class="vista-tab" onclick="cambiarVista('real', event)">El censo completo</div>
     </div>
+
+    <!-- TABLA ESCAÑOS -->
+    <div id="tabla-escanos"></div>
 
     <!-- VISTA A -->
     <div class="resultados-datos-wrap" id="vista-oficial">
@@ -1385,6 +1462,31 @@ function actualizarContadores() {
   });
 }
 
+function renderTablaEscanos() {
+  const d = datosElectorales;
+  const conEscanos = d.partidos.filter(p => p.escanos > 0).sort((a, b) => b.escanos - a.escanos);
+  const total = conEscanos.reduce((s, p) => s + p.escanos, 0);
+  const coloresPartidos = {'PP':'#0056A2','PSOE':'#E3000F','VOX':'#63BE21','UPL':'#8B0000','XAV':'#F5C400','SY':'#111111'};
+
+  const filas = conEscanos.map(p => {
+    const color = coloresPartidos[p.siglas] || '#999';
+    const pct = ((p.escanos / total) * 100).toFixed(1);
+    return `<div class="esc-fila">
+      <span class="esc-siglas">${p.siglas}</span>
+      <div class="esc-barra-wrap">
+        <div class="esc-barra" style="width:${pct}%;background:${color}"></div>
+      </div>
+      <span class="esc-num">${p.escanos}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('tabla-escanos').innerHTML = `
+    <div class="esc-bloque">
+      <p class="barras-titulo">Distribución de escaños — ${total} procuradores</p>
+      <div class="esc-grid">${filas}</div>
+    </div>`;
+}
+
 document.addEventListener("DOMContentLoaded", function() {
   actualizarContadores();
   renderPartidos();
@@ -1402,6 +1504,7 @@ document.addEventListener("DOMContentLoaded", function() {
   document.querySelectorAll('.resultados-datos-wrap').forEach(d => d.classList.remove('visible'));
   document.getElementById('vista-oficial').classList.add('visible');
   renderVistaOficial();
+  renderTablaEscanos();
 });
 
 
@@ -1446,7 +1549,7 @@ function renderVistaOficial() {
         <div class="barra-fill" style="width:${v}%;background:${color}"></div>
         <span class="barra-pct-inline">${v.toFixed(2)}% · ${fmt(p.votos)}</span>
       </div>
-      <span class="barra-escanos">${p.escanos > 0 ? p.escanos + ' esc.' : ''}</span>
+      
     </div>`;
   }).join('');
 
@@ -1498,7 +1601,7 @@ function renderVistaOficial() {
         <div class="barra-fill" style="width:${v}%;background:${color}"></div>
         <span class="barra-pct-inline">${v.toFixed(2)}% · ${fmt(p.votos)}</span>
       </div>
-      <span class="barra-escanos">${p.escanos > 0 ? p.escanos + ' esc.' : ''}</span>
+      
     </div>`;
   }).join('');
 
@@ -1516,7 +1619,7 @@ function renderVistaOficial() {
           <div class="barra-color" style="width:${pctN(p.votos, d.censo)}%;background:${coloresPartidos[i] || '#999'}"></div>
           <span class="barra-pct-out-fixed">${pctN(p.votos, d.censo).toFixed(2)}% · ${fmt(p.votos)}</span>
         </div>
-        <span class="barra-escanos">${p.escanos > 0 ? p.escanos + ' esc.' : ''}</span>
+        
       </div>`
     })),
     { pct: pa, html: `<div class="barra-row">
@@ -1524,21 +1627,21 @@ function renderVistaOficial() {
       <div class="barra-wrap">
         <div class="barra-color" style="width:${pa}%;background:#8a8a8a"></div>
         <span class="barra-pct-out-fixed">${pa.toFixed(2)}% · ${fmt(abstencion)}</span>
-      </div><span class="barra-escanos"></span>
+      </div>
     </div>` },
     { pct: pb, html: `<div class="barra-row">
       <span class="barra-siglas" >Blanco</span>
       <div class="barra-wrap">
         <div class="barra-color" style="width:${pb}%;background:#cccccc"></div>
         <span class="barra-pct-out-fixed">${pb.toFixed(2)}% · ${fmt(d.votos_blanco)}</span>
-      </div><span class="barra-escanos"></span>
+      </div>
     </div>` },
     { pct: pn, html: `<div class="barra-row">
       <span class="barra-siglas" >Nulo</span>
       <div class="barra-wrap">
         <div class="barra-color" style="width:${pn}%;background:#e0e0e0"></div>
         <span class="barra-pct-out-fixed">${pn.toFixed(2)}% · ${fmt(d.votos_nulos)}</span>
-      </div><span class="barra-escanos"></span>
+      </div>
     </div>` }
   ].sort((a, b) => b.pct - a.pct);
 
