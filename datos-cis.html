@@ -660,7 +660,6 @@ const barometros = [
     mes: "Enero 2026",
     fecha: "2026-01",
     muestra: 4006,
-    // Partidos sobre muestra total (vista Neutralito)
     partidos: [
       { siglas: "PSOE",               color: "#E3000F", votos: 883 },
       { siglas: "PP",                 color: "#0056A2", votos: 696 },
@@ -680,6 +679,30 @@ const barometros = [
     nulo:        70,
     indecisos:  727,
     abstencion: 234,
+  },
+  {
+    mes: "Febrero 2026",
+    fecha: "2026-02",
+    muestra: 4027,
+    partidos: [
+      { siglas: "PSOE",               color: "#E3000F", votos: 887 },
+      { siglas: "PP",                 color: "#0056A2", votos: 734 },
+      { siglas: "VOX",                color: "#63BE21", votos: 460 },
+      { siglas: "Sumar",              color: "#DD0073", votos: 247 },
+      { siglas: "Podemos",            color: "#6A0DAD", votos: 115 },
+      { siglas: "ERC",                color: "#F5A623", votos:  66 },
+      { siglas: "Se Acabó la Fiesta", color: "#1A1A1A", votos:  62 },
+      { siglas: "EH Bildu",           color: "#006400", votos:  45 },
+      { siglas: "Junts",              color: "#003DA5", votos:  35 },
+      { siglas: "BNG",                color: "#5B8B2A", votos:  31 },
+      { siglas: "EAJ-PNV",            color: "#007A3D", votos:  24 },
+      { siglas: "PACMA",              color: "#FF6900", votos:  22 },
+      { siglas: "Otros",              color: "#8a8a8a", votos: 150 },
+    ],
+    blanco:     176,
+    nulo:        73,
+    indecisos:  664,
+    abstencion: 236,
   }
 ];
 
@@ -883,60 +906,118 @@ function renderHistorico() {
     const n = b.muestra;
     const totalP = b.partidos.reduce((s,p) => s+p.votos, 0);
     return {
-      partidos:   pctN(totalP, n),
-      indecisos:  pctN(b.indecisos, n),
-      abstencion: pctN(b.abstencion, n),
-      desperdiciados: pctN(b.blanco + b.nulo, n),
+      partidos:      parseFloat(pctN(totalP, n).toFixed(1)),
+      indecisos:     parseFloat(pctN(b.indecisos, n).toFixed(1)),
+      abstencion:    parseFloat(pctN(b.abstencion, n).toFixed(1)),
+      desperdiciados: parseFloat(pctN(b.blanco + b.nulo, n).toFixed(1)),
     };
   };
 
   if (chartHistorico) chartHistorico.destroy();
   chartHistorico = new Chart(document.getElementById('chart-historico'), {
-    type: 'bar',
+    type: 'line',
     data: {
       labels,
       datasets: [
         {
           label: 'Partidos',
-          data: barometros.map(b => calcBloques(b).partidos.toFixed(1)),
-          backgroundColor: COLORES_BLOQUES.partidos,
+          data: barometros.map(b => calcBloques(b).partidos),
+          borderColor: '#C0C0C0',
+          backgroundColor: 'transparent',
+          borderWidth: 2.5,
+          pointRadius: 5,
+          pointBackgroundColor: '#C0C0C0',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          tension: 0.3,
+          fill: false,
         },
         {
           label: 'Indecisos',
-          data: barometros.map(b => calcBloques(b).indecisos.toFixed(1)),
-          backgroundColor: COLORES_BLOQUES.indecisos,
+          data: barometros.map(b => calcBloques(b).indecisos),
+          borderColor: '#2F3A4A',
+          backgroundColor: 'transparent',
+          borderWidth: 2.5,
+          pointRadius: 5,
+          pointBackgroundColor: '#2F3A4A',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          tension: 0.3,
+          fill: false,
         },
         {
           label: 'Abstención',
-          data: barometros.map(b => calcBloques(b).abstencion.toFixed(1)),
-          backgroundColor: COLORES_BLOQUES.abstencion,
+          data: barometros.map(b => calcBloques(b).abstencion),
+          borderColor: '#FFD700',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          borderDash: [5, 4],
+          pointRadius: 5,
+          pointBackgroundColor: '#FFD700',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          tension: 0.3,
+          fill: false,
         },
         {
-          label: 'Blanco+Nulo',
-          data: barometros.map(b => calcBloques(b).desperdiciados.toFixed(1)),
-          backgroundColor: COLORES_BLOQUES.desperdiciados,
+          label: 'Blanco + Nulo',
+          data: barometros.map(b => calcBloques(b).desperdiciados),
+          borderColor: '#111111',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          borderDash: [5, 4],
+          pointRadius: 5,
+          pointBackgroundColor: '#111111',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          tension: 0.3,
+          fill: false,
         },
       ]
     },
     options: {
       responsive: true,
+      interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: {
+          position: 'bottom',
           labels: {
-            font: { family: "'IBM Plex Mono'" },
-            color: '#333',
-            boxWidth: 12,
+            font: { family: "'IBM Plex Mono'", size: 11 },
+            color: '#555',
+            boxWidth: 24,
+            boxHeight: 2,
+            padding: 16,
+            usePointStyle: false,
           }
         },
         tooltip: {
+          backgroundColor: '#111',
+          titleColor: '#fff',
+          bodyColor: '#C0C0C0',
+          titleFont: { family: "'IBM Plex Mono'", size: 11 },
+          bodyFont: { family: "'IBM Plex Mono'", size: 11 },
+          padding: 12,
           callbacks: {
-            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%`
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}%`
           }
         }
       },
       scales: {
-        x: { stacked: true, ticks: { font: { family: "'IBM Plex Mono'", size: 11 }, color: '#8a8a8a' }, grid: { display: false } },
-        y: { stacked: true, max: 100, ticks: { font: { family: "'IBM Plex Mono'", size: 11 }, color: '#8a8a8a', callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.05)' } }
+        x: {
+          ticks: { font: { family: "'IBM Plex Mono'", size: 11 }, color: '#8a8a8a' },
+          grid: { display: false },
+        },
+        y: {
+          min: 0,
+          max: 80,
+          ticks: {
+            font: { family: "'IBM Plex Mono'", size: 11 },
+            color: '#8a8a8a',
+            callback: v => v + '%',
+            stepSize: 10,
+          },
+          grid: { color: 'rgba(0,0,0,0.05)' }
+        }
       }
     }
   });
