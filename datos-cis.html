@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barómetro CIS — Neutralito · Datos sin maquillaje</title>
+<meta name="description" content="El barómetro del CIS tal como es: con abstención, indecisos y denominador completo. Lo que los medios no te muestran.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white:       #ffffff;
+    --off-white:   #f5f5f2;
+    --silver:      #C0C0C0;
+    --silver-dark: #8a8a8a;
+    --black:       #111111;
+    --black-soft:  #333333;
+    --gold:        #FFD700;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--off-white);
+    color: var(--black);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 300;
+    display: flex;
+    align-items: stretch;
+    height: 60px;
+    background: var(--white);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 24px;
+    text-decoration: none;
+    border-right: 1px solid rgba(0,0,0,0.08);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .nav-brand img { height: 28px; width: auto; object-fit: contain; }
+  .nav-brand-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+  .nav-tabs {
+    display: flex;
+    flex: 1;
+    overflow-x: auto;
+    align-items: center;
+    padding: 0 24px;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 100%;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .nav-tab:hover { color: var(--black); }
+  .nav-tab.active { color: var(--black); border-bottom-color: var(--black); }
+  .nav-social {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 20px;
+    border-left: 1px solid rgba(0,0,0,0.08);
+    flex-shrink: 0;
+  }
+  .nav-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    color: var(--silver-dark);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-social-link:hover { color: var(--black); }
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 20px;
+    cursor: pointer;
+    margin-left: auto;
+  }
+  .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--black); }
+  .nav-mobile-menu {
+    position: fixed;
+    top: 60px; left: 0; right: 0;
+    background: var(--white);
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    z-index: 299;
+    flex-direction: column;
+    display: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .nav-mobile-item {
+    padding: 16px 24px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    text-decoration: none;
+    display: block;
+  }
+  .nav-mobile-item:hover { color: var(--black); background: var(--off-white); }
+  .nav-mobile-item.active { color: var(--black); font-weight: 700; }
+  @media (max-width: 768px) {
+    .nav-tabs { display: none; }
+    .nav-hamburger { display: flex; }
+    .nav-social { display: none; }
+    .nav-mobile-menu.open { display: flex !important; }
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--black);
+    padding: 100px 52px 48px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .hero-inner { max-width: 900px; margin: 0 auto; }
+  .hero-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: block;
+  }
+  .hero-titulo {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(36px, 6vw, 68px);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+  .hero-subtitulo {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--silver);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  /* ── SELECTOR DE MES ── */
+  .mes-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .mes-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+  }
+  .mes-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    background: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mes-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+  .mes-btn.active {
+    color: var(--black);
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
+  /* ── VISTAS TABS ── */
+  .vistas-wrap {
+    background: var(--white);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    position: sticky;
+    top: 60px;
+    z-index: 100;
+  }
+  .vistas-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    padding: 0 52px;
+  }
+  .vista-tab {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    padding: 16px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .vista-tab:hover { color: var(--black); }
+  .vista-tab.active { color: var(--black); border-bottom-color: var(--black); }
+  @media (max-width: 768px) {
+    .vistas-inner { padding: 0 16px; overflow-x: auto; scrollbar-width: none; }
+    .vistas-inner::-webkit-scrollbar { display: none; }
+  }
+
+  /* ── CONTENIDO PRINCIPAL ── */
+  .contenido {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 52px 80px;
+  }
+  @media (max-width: 768px) {
+    .hero { padding: 88px 24px 40px; }
+    .contenido { padding: 32px 24px 60px; }
+  }
+
+  /* ── VISTA PANEL ── */
+  .vista-panel { display: none; }
+  .vista-panel.active { display: block; }
+
+  /* ── DATOS CLAVE ── */
+  .datos-clave {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .dato-clave {
+    flex: 1;
+    min-width: 120px;
+    background: var(--white);
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .dato-clave-valor {
+    font-family: 'Oswald', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1;
+  }
+  .dato-clave-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+  }
+  .dato-clave.destacado .dato-clave-valor { color: var(--black); }
+  .dato-clave.aparte {
+    background: rgba(0,0,0,0.03);
+    border-left: 3px solid rgba(0,0,0,0.15);
+  }
+  .dato-clave.aparte .dato-clave-valor { color: var(--silver-dark); }
+
+  /* ── NOTA VISTA ── */
+  .vista-nota {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--silver-dark);
+    letter-spacing: 0.06em;
+    margin-bottom: 28px;
+    padding: 10px 14px;
+    border-left: 3px solid var(--gold);
+    background: var(--white);
+  }
+
+  /* ── BARRAS ── */
+  .barras-titulo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    margin-bottom: 16px;
+  }
+  .barra-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .barra-siglas {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--black);
+    width: 100px;
+    flex-shrink: 0;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .barra-wrap {
+    flex: 1;
+    background: rgba(0,0,0,0.06);
+    height: 26px;
+    display: flex;
+    align-items: center;
+    overflow: visible;
+    position: relative;
+  }
+  .barra-fill {
+    height: 100%;
+    min-width: 2px;
+    flex-shrink: 0;
+    transition: width 0.6s ease;
+  }
+  .barra-pct {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--black);
+    white-space: nowrap;
+    padding-left: 8px;
+    flex-shrink: 0;
+  }
+  @media (max-width: 600px) {
+    .barra-siglas { width: 72px; font-size: 11px; }
+    .barra-pct { font-size: 10px; }
+  }
+
+  /* ── BLOQUES ── */
+  .bloques-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 600px) {
+    .bloques-grid { grid-template-columns: 1fr; }
+  }
+  .bloque-card {
+    background: var(--white);
+    padding: 28px 24px;
+  }
+  .bloque-card.dark { background: var(--black); }
+  .bloque-pct {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(48px, 8vw, 72px);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .bloque-card.dark .bloque-pct { color: var(--white); }
+  .bloque-card:not(.dark) .bloque-pct { color: var(--black); }
+  .bloque-nombre {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .bloque-card.dark .bloque-nombre { color: var(--silver); }
+  .bloque-card:not(.dark) .bloque-nombre { color: var(--black-soft); }
+  .bloque-desc {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--silver-dark);
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+  }
+  .bloque-card.dark .bloque-desc { color: var(--silver-dark); }
+  .bloque-barra {
+    height: 4px;
+    margin-top: 20px;
+    transition: width 0.6s ease;
+  }
+
+  /* ── HISTÓRICO ── */
+  .historico-wrap {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+  .historico-titulo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    margin-bottom: 24px;
+  }
+  .historico-aviso {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--silver-dark);
+    padding: 16px 20px;
+    border: 1px solid rgba(0,0,0,0.08);
+    background: var(--white);
+  }
+
+  /* ── SECCIÓN APARTE CIS ── */
+  .seccion-aparte {
+    margin-top: 40px;
+    padding: 24px 28px;
+    background: rgba(0,0,0,0.03);
+    border-left: 3px solid rgba(0,0,0,0.1);
+  }
+  .seccion-aparte-titulo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    margin-bottom: 16px;
+  }
+  .aparte-grid {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .aparte-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .aparte-valor {
+    font-family: 'Oswald', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--silver-dark);
+  }
+  .aparte-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+  }
+
+  /* ── NOTA FINAL ── */
+  .nota-final {
+    font-size: 12px;
+    color: var(--silver-dark);
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0,0,0,0.07);
+    line-height: 1.7;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--off-white);
+    border-top: 1px solid rgba(0,0,0,0.07);
+    padding: 32px 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-marca { display: flex; align-items: center; gap: 8px; }
+  .footer-marca img { height: 22px; }
+  .footer-marca-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+  .footer-social { display: flex; gap: 20px; align-items: center; }
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .social-link:hover { color: var(--black); }
+  @media (max-width: 768px) {
+    footer { padding: 28px 24px; flex-direction: column; align-items: center; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html#inicio" class="nav-brand">
+    <img src="imagenes/logo_neutralito.png" alt="Neutralito">
+    <span class="nav-brand-text">Neutralito</span>
+  </a>
+  <div class="nav-tabs">
+    <a href="index.html#datos" class="nav-tab active">Datos</a>
+    <a href="index.html#elecciones" class="nav-tab">Elecciones</a>
+    <a href="index.html#conceptos" class="nav-tab">Conceptos</a>
+    <a href="index.html#actualidad" class="nav-tab">Actualidad</a>
+  </div>
+  <div class="nav-hamburger" onclick="toggleMenu()" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="nav-social">
+    <a href="https://t.me/neutralito" target="_blank" class="nav-social-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 14.36l-2.945-.918c-.64-.203-.658-.64.135-.953l11.57-4.461c.537-.194 1.006.131.964.193z"/></svg>
+    </a>
+    <a href="https://x.com/Neutralito_e" target="_blank" class="nav-social-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<div class="nav-mobile-menu" id="mobileMenu">
+  <a href="index.html#inicio" class="nav-mobile-item">Inicio</a>
+  <a href="index.html#datos" class="nav-mobile-item active">Datos</a>
+  <a href="index.html#elecciones" class="nav-mobile-item">Elecciones</a>
+  <a href="index.html#conceptos" class="nav-mobile-item">Conceptos</a>
+  <a href="index.html#actualidad" class="nav-mobile-item">Actualidad</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <span class="hero-label">Barómetro CIS · Intención de voto</span>
+    <h1 class="hero-titulo">El CIS<br>sin maquillaje</h1>
+    <p class="hero-subtitulo">Los mismos datos que publica el CIS, con la diferencia que importa: el denominador completo. Aquí los indecisos y la abstención no desaparecen del gráfico.</p>
+    <div class="mes-selector" id="mes-selector"></div>
+  </div>
+</div>
+
+<!-- VISTAS TABS -->
+<div class="vistas-wrap">
+  <div class="vistas-inner">
+    <div class="vista-tab active" onclick="cambiarVista('cis', event)">Como lo publican</div>
+    <div class="vista-tab" onclick="cambiarVista('neutralito', event)">El censo completo</div>
+    <div class="vista-tab" onclick="cambiarVista('bloques', event)">Por bloques</div>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div class="contenido">
+
+  <!-- ── VISTA CIS ── -->
+  <div class="vista-panel active" id="vista-cis">
+    <div class="vista-nota">% calculado sobre votos válidos — el denominador que usan el CIS y los medios. Abstención, indecisos y nulo aparecen aparte, fuera del 100%.</div>
+    <div class="datos-clave" id="cis-datos-clave"></div>
+    <p class="barras-titulo">Estimación de voto — % sobre votos válidos</p>
+    <div id="cis-barras"></div>
+    <div class="seccion-aparte">
+      <p class="seccion-aparte-titulo">Fuera del 100% — lo que esta vista no muestra</p>
+      <div class="aparte-grid" id="cis-aparte"></div>
+    </div>
+    <p class="nota-final" id="cis-nota"></p>
+  </div>
+
+  <!-- ── VISTA NEUTRALITO ── -->
+  <div class="vista-panel" id="vista-neutralito">
+    <div class="vista-nota">% calculado sobre la muestra total. Todo el mundo cuenta — los que votan, los que dudan y los que no van a votar.</div>
+    <div class="datos-clave" id="neu-datos-clave"></div>
+    <p class="barras-titulo">Estimación de voto — % sobre muestra total</p>
+    <div id="neu-barras"></div>
+    <p class="nota-final" id="neu-nota"></p>
+  </div>
+
+  <!-- ── VISTA BLOQUES ── -->
+  <div class="vista-panel" id="vista-bloques">
+    <div class="vista-nota">La foto macro. Cuánta gente está decidida, cuánta duda, cuánta se abstiene y cuánta va a desperdiciar su voto.</div>
+    <div class="bloques-grid" id="bloques-grid"></div>
+    <p class="nota-final" id="bloques-nota"></p>
+  </div>
+
+  <!-- ── HISTÓRICO ── -->
+  <div class="historico-wrap">
+    <p class="historico-titulo">Evolución histórica — bloques</p>
+    <div id="historico-contenido"></div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-marca">
+    <img src="imagenes/logo_neutralito.png" alt="Neutralito">
+    <span class="footer-marca-text">Neutralito</span>
+  </div>
+  <div class="footer-social">
+    <a href="https://t.me/neutralito" target="_blank" class="social-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 14.36l-2.945-.918c-.64-.203-.658-.64.135-.953l11.57-4.461c.537-.194 1.006.131.964.193z"/></svg>
+      Telegram
+    </a>
+    <a href="https://x.com/Neutralito_e" target="_blank" class="social-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      X
+    </a>
+  </div>
+  <div style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:300;color:var(--silver-dark);">
+    <strong style="color:var(--black)">© Neutralito 2026</strong>
+  </div>
+</footer>
+
+<script>
+
+// ══════════════════════════════════════════════
+// DATOS — añade un objeto por cada barómetro nuevo
+// ══════════════════════════════════════════════
+const barometros = [
+  {
+    mes: "Enero 2026",
+    fecha: "2026-01",
+    muestra: 4006,
+    // Partidos sobre muestra total (vista Neutralito)
+    partidos: [
+      { siglas: "PSOE",               color: "#E3000F", votos: 883 },
+      { siglas: "PP",                 color: "#0056A2", votos: 696 },
+      { siglas: "VOX",                color: "#63BE21", votos: 445 },
+      { siglas: "Sumar",              color: "#DD0073", votos: 254 },
+      { siglas: "Podemos",            color: "#6A0DAD", votos: 108 },
+      { siglas: "ERC",                color: "#F5A623", votos:  77 },
+      { siglas: "EH Bildu",           color: "#006400", votos:  52 },
+      { siglas: "Se Acabó la Fiesta", color: "#1A1A1A", votos:  42 },
+      { siglas: "Junts",              color: "#003DA5", votos:  40 },
+      { siglas: "BNG",                color: "#5B8B2A", votos:  33 },
+      { siglas: "EAJ-PNV",            color: "#007A3D", votos:  27 },
+      { siglas: "PACMA",              color: "#FF6900", votos:  25 },
+      { siglas: "Otros",              color: "#8a8a8a", votos: 148 },
+    ],
+    blanco:     145,
+    nulo:        70,
+    indecisos:  727,
+    abstencion: 234,
+  }
+];
+
+// Colores bloques
+const COLORES_BLOQUES = {
+  partidos:    '#111111',
+  indecisos:   '#8a8a8a',
+  abstencion:  '#C0C0C0',
+  desperdiciados: '#2F3A4A',
+};
+
+// ══════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════
+let mesActual = 0;
+let vistaActual = 'cis';
+let chartHistorico = null;
+
+// ══════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════
+const fmt   = n => n.toLocaleString('es-ES');
+const pct   = (v, base) => base > 0 ? (v / base * 100).toFixed(1) + '%' : '—';
+const pctN  = (v, base) => base > 0 ? (v / base * 100) : 0;
+
+function calcularDatos(b) {
+  const n = b.muestra;
+  const totalPartidos = b.partidos.reduce((s, p) => s + p.votos, 0);
+  const desperdiciados = b.blanco + b.nulo;
+
+  // Vista CIS: denominador = partidos + blanco (sin nulo)
+  const nCis = totalPartidos + b.blanco;
+
+  return { n, totalPartidos, desperdiciados, nCis };
+}
+
+// ══════════════════════════════════════════════
+// RENDER SELECTOR DE MES
+// ══════════════════════════════════════════════
+function renderMeses() {
+  const wrap = document.getElementById('mes-selector');
+  wrap.innerHTML = '<span class="mes-label">Mes:</span>' +
+    barometros.map((b, i) =>
+      `<button class="mes-btn ${i === mesActual ? 'active' : ''}" onclick="seleccionarMes(${i})">${b.mes}</button>`
+    ).join('');
+}
+
+function seleccionarMes(i) {
+  mesActual = i;
+  renderMeses();
+  renderVista();
+}
+
+// ══════════════════════════════════════════════
+// RENDER VISTAS
+// ══════════════════════════════════════════════
+function renderVista() {
+  const b = barometros[mesActual];
+  const { n, totalPartidos, desperdiciados, nCis } = calcularDatos(b);
+
+  if (vistaActual === 'cis')        renderCIS(b, n, nCis, desperdiciados);
+  if (vistaActual === 'neutralito') renderNeutralito(b, n, totalPartidos, desperdiciados);
+  if (vistaActual === 'bloques')    renderBloques(b, n, totalPartidos, desperdiciados);
+}
+
+// ── Vista CIS ──
+function renderCIS(b, n, nCis, desperdiciados) {
+  // Datos clave
+  document.getElementById('cis-datos-clave').innerHTML = `
+    <div class="dato-clave"><span class="dato-clave-valor">${fmt(nCis)}</span><span class="dato-clave-label">Votos válidos (denominador)</span></div>
+    <div class="dato-clave"><span class="dato-clave-valor">${fmt(n)}</span><span class="dato-clave-label">Muestra total</span></div>
+    <div class="dato-clave"><span class="dato-clave-valor">${pct(nCis, n)}</span><span class="dato-clave-label">% del total que cuenta</span></div>
+  `;
+
+  // Barras — partidos + blanco sobre nCis
+  const items = [
+    ...b.partidos.map(p => ({ siglas: p.siglas, color: p.color, votos: p.votos })),
+    { siglas: 'En blanco', color: '#cccccc', votos: b.blanco },
+  ].sort((a, b) => b.votos - a.votos);
+
+  const max = Math.max(...items.map(p => pctN(p.votos, nCis)));
+  document.getElementById('cis-barras').innerHTML = items.map(p => {
+    const v = pctN(p.votos, nCis);
+    const w = max > 0 ? (v / max * 100) : 0;
+    return `<div class="barra-row">
+      <span class="barra-siglas">${p.siglas}</span>
+      <div class="barra-wrap">
+        <div class="barra-fill" style="width:${w}%;background:${p.color}"></div>
+        <span class="barra-pct">${v.toFixed(1)}%</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Aparte
+  document.getElementById('cis-aparte').innerHTML = `
+    <div class="aparte-item"><span class="aparte-valor">${pct(b.abstencion, n)}</span><span class="aparte-label">Abstención</span></div>
+    <div class="aparte-item"><span class="aparte-valor">${pct(b.indecisos, n)}</span><span class="aparte-label">Indecisos</span></div>
+    <div class="aparte-item"><span class="aparte-valor">${pct(b.nulo, n)}</span><span class="aparte-label">Voto nulo</span></div>
+  `;
+
+  document.getElementById('cis-nota').textContent =
+    `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Denominador CIS: votos válidos (${fmt(nCis)}) = partidos + voto en blanco.`;
+}
+
+// ── Vista Neutralito ──
+function renderNeutralito(b, n, totalPartidos, desperdiciados) {
+  document.getElementById('neu-datos-clave').innerHTML = `
+    <div class="dato-clave"><span class="dato-clave-valor">${fmt(n)}</span><span class="dato-clave-label">Muestra total (denominador)</span></div>
+    <div class="dato-clave"><span class="dato-clave-valor">${pct(totalPartidos, n)}</span><span class="dato-clave-label">Decide por un partido</span></div>
+    <div class="dato-clave"><span class="dato-clave-valor">${pct(b.indecisos, n)}</span><span class="dato-clave-label">Indecisos</span></div>
+    <div class="dato-clave aparte"><span class="dato-clave-valor">${pct(b.abstencion, n)}</span><span class="dato-clave-label">Abstención</span></div>
+  `;
+
+  const todos = [
+    ...b.partidos.map(p => ({ siglas: p.siglas, color: p.color, votos: p.votos })),
+    { siglas: 'En blanco', color: '#cccccc', votos: b.blanco },
+    { siglas: 'Nulo',      color: '#e0e0e0', votos: b.nulo },
+    { siglas: 'Indecisos', color: '#8a8a8a', votos: b.indecisos },
+    { siglas: 'Abstención',color: '#C0C0C0', votos: b.abstencion },
+  ].sort((a, b) => b.votos - a.votos);
+
+  const max = Math.max(...todos.map(p => pctN(p.votos, n)));
+  document.getElementById('neu-barras').innerHTML = todos.map(p => {
+    const v = pctN(p.votos, n);
+    const w = max > 0 ? (v / max * 100) : 0;
+    return `<div class="barra-row">
+      <span class="barra-siglas">${p.siglas}</span>
+      <div class="barra-wrap">
+        <div class="barra-fill" style="width:${w}%;background:${p.color}"></div>
+        <span class="barra-pct">${v.toFixed(1)}%</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('neu-nota').textContent =
+    `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Todos los porcentajes calculados sobre la muestra total.`;
+}
+
+// ── Vista Bloques ──
+function renderBloques(b, n, totalPartidos, desperdiciados) {
+  const bloques = [
+    {
+      nombre: 'Partidos',
+      votos: totalPartidos,
+      color: COLORES_BLOQUES.partidos,
+      dark: true,
+      desc: 'Tienen intención de voto por algún partido'
+    },
+    {
+      nombre: 'Indecisos',
+      votos: b.indecisos,
+      color: COLORES_BLOQUES.indecisos,
+      dark: false,
+      desc: 'No saben todavía o no contestan'
+    },
+    {
+      nombre: 'Abstención',
+      votos: b.abstencion,
+      color: COLORES_BLOQUES.abstencion,
+      dark: false,
+      desc: 'No tienen intención de votar'
+    },
+    {
+      nombre: 'Blanco + Nulo',
+      votos: desperdiciados,
+      color: COLORES_BLOQUES.desperdiciados,
+      dark: true,
+      desc: 'Votan pero no por ningún partido'
+    },
+  ].sort((a, b) => b.votos - a.votos);
+
+  document.getElementById('bloques-grid').innerHTML = bloques.map(bl => {
+    const v = pctN(bl.votos, n);
+    return `<div class="bloque-card ${bl.dark ? 'dark' : ''}">
+      <div class="bloque-pct">${v.toFixed(1)}%</div>
+      <div class="bloque-nombre">${bl.nombre}</div>
+      <div class="bloque-desc">${bl.desc}<br>${fmt(bl.votos)} de ${fmt(n)} encuestados</div>
+      <div class="bloque-barra" style="width:${v}%;background:${bl.dark ? '#FFD700' : '#C0C0C0'}"></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('bloques-nota').textContent =
+    `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Los cuatro bloques suman el 100% de la muestra.`;
+}
+
+// ══════════════════════════════════════════════
+// HISTÓRICO
+// ══════════════════════════════════════════════
+function renderHistorico() {
+  const wrap = document.getElementById('historico-contenido');
+
+  if (barometros.length < 2) {
+    wrap.innerHTML = `<p class="historico-aviso">El gráfico de evolución aparecerá cuando haya datos de al menos dos meses.</p>`;
+    return;
+  }
+
+  wrap.innerHTML = `<div style="max-width:700px"><canvas id="chart-historico"></canvas></div>`;
+
+  const labels = barometros.map(b => b.mes);
+  const calcBloques = b => {
+    const n = b.muestra;
+    const totalP = b.partidos.reduce((s,p) => s+p.votos, 0);
+    return {
+      partidos:   pctN(totalP, n),
+      indecisos:  pctN(b.indecisos, n),
+      abstencion: pctN(b.abstencion, n),
+      desperdiciados: pctN(b.blanco + b.nulo, n),
+    };
+  };
+
+  if (chartHistorico) chartHistorico.destroy();
+  chartHistorico = new Chart(document.getElementById('chart-historico'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Partidos',
+          data: barometros.map(b => calcBloques(b).partidos.toFixed(1)),
+          backgroundColor: COLORES_BLOQUES.partidos,
+        },
+        {
+          label: 'Indecisos',
+          data: barometros.map(b => calcBloques(b).indecisos.toFixed(1)),
+          backgroundColor: COLORES_BLOQUES.indecisos,
+        },
+        {
+          label: 'Abstención',
+          data: barometros.map(b => calcBloques(b).abstencion.toFixed(1)),
+          backgroundColor: COLORES_BLOQUES.abstencion,
+        },
+        {
+          label: 'Blanco+Nulo',
+          data: barometros.map(b => calcBloques(b).desperdiciados.toFixed(1)),
+          backgroundColor: COLORES_BLOQUES.desperdiciados,
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            font: { family: "'IBM Plex Mono'" },
+            color: '#333',
+            boxWidth: 12,
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%`
+          }
+        }
+      },
+      scales: {
+        x: { stacked: true, ticks: { font: { family: "'IBM Plex Mono'", size: 11 }, color: '#8a8a8a' }, grid: { display: false } },
+        y: { stacked: true, max: 100, ticks: { font: { family: "'IBM Plex Mono'", size: 11 }, color: '#8a8a8a', callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════════
+// CAMBIO DE VISTA
+// ══════════════════════════════════════════════
+function cambiarVista(vista, e) {
+  vistaActual = vista;
+  document.querySelectorAll('.vista-tab').forEach(t => t.classList.remove('active'));
+  if (e && e.target) e.target.classList.add('active');
+  document.querySelectorAll('.vista-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('vista-' + vista).classList.add('active');
+  renderVista();
+}
+
+// ══════════════════════════════════════════════
+// MENÚ MÓVIL
+// ══════════════════════════════════════════════
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('mobileMenu');
+  const hamburger = document.getElementById('hamburger');
+  if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  renderMeses();
+  renderVista();
+  renderHistorico();
+});
+</script>
+</body>
+</html>
