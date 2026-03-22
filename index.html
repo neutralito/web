@@ -738,12 +738,17 @@
   // Al cargar, leer el hash de la URL y activar la sección correcta
   window.addEventListener('DOMContentLoaded', function() {
     const hash = window.location.hash.replace('#', '');
+    // Check if we came from another page (referrer is not empty)
+    const cameFromElsewhere = document.referrer !== '' && !document.referrer.includes('index.html');
     if (hash && validPages.includes(hash)) {
       showPage(hash);
+    } else if (cameFromElsewhere) {
+      // Came from elecciones page - show inicio directly
+      showPage('inicio');
     } else {
       showPage('inicio');
-      // On mobile, hide content until user selects
-      if (window.innerWidth <= 768) {
+      // On mobile, hide content until user selects (only on first load)
+      if (window.innerWidth <= 768 && !cameFromElsewhere) {
         document.querySelectorAll('.page').forEach(p => p.classList.add('mobile-hidden'));
       }
     }
