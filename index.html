@@ -27,6 +27,7 @@
   <meta name="twitter:title" content="Neutralito — Análisis político independiente">
   <meta name="twitter:description" content="Los datos sin maquillaje. Candidaturas completas, resultados con censo real y análisis sin agenda.">
   <meta name="twitter:image" content="https://neutralito.github.io/web/imagenes/og_image.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="neutralito.css">
@@ -640,6 +641,9 @@
     color: var(--silver-dark);
   }
 
+  @media (min-width: 480px) {
+    .bloques-mini-grid { grid-template-columns: repeat(4, 1fr) !important; }
+  }
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="a4884acc-6164-420b-81f0-c24fb1109fbe"></script>
 </head>
@@ -766,7 +770,7 @@
       <div class="page-divider" style="margin-top:48px;"></div>
 
       <a href="datos-cis.html" class="datos-card" style="text-decoration:none;display:block;max-width:640px;background:var(--black);color:#fff;padding:32px 32px 28px;border:none;transition:transform 0.15s;cursor:pointer;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:24px;">
           <div>
             <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:#FFD700;border:1px solid rgba(255,215,0,0.4);padding:3px 8px;background:rgba(255,215,0,0.08);">✓ Febrero 2026</span>
           </div>
@@ -776,7 +780,7 @@
         <div style="font-family:'Oswald',sans-serif;font-size:clamp(22px,3vw,28px);font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#fff;margin-bottom:6px;">Barómetro CIS</div>
         <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--silver);margin-bottom:28px;">Intención de voto</div>
 
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.08);">
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,0.08);" class="bloques-mini-grid">
           <div style="background:#111;padding:16px 14px;">
             <div style="font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;color:#C0C0C0;line-height:1;">71.5%</div>
             <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--silver);margin-top:5px;">Partidos</div>
@@ -795,6 +799,12 @@
           </div>
         </div>
       </a>
+
+      <div style="margin-top:52px;padding-top:36px;border-top:1px solid rgba(0,0,0,0.08);">
+        <p style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--silver-dark);margin-bottom:20px;">Evolución histórica — bloques</p>
+        <div style="max-width:640px"><canvas id="chart-historico-index"></canvas></div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -900,6 +910,7 @@
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
     const page = document.getElementById('page-' + id);
     if (page) page.classList.add('active');
+    if (id === 'datos') setTimeout(renderHistoricoIndex, 50);
     document.querySelectorAll('.nav-tab').forEach(t => {
       if (t.getAttribute('onclick') === "showPage('" + id + "')") {
         t.classList.add('active');
@@ -918,6 +929,61 @@
       showPage('inicio');
     }
   });
+
+// ── HISTÓRICO INDEX ──
+const BAROMETROS_DATA = [
+  {
+    mes: "Enero 2026", muestra: 4006,
+    partidos: [883,696,445,254,108,77,52,42,40,33,27,25,148].reduce((a,b)=>a+b,0),
+    indecisos: 727, abstencion: 234, blanco: 145, nulo: 70
+  },
+  {
+    mes: "Febrero 2026", muestra: 4027,
+    partidos: [887,734,460,247,115,66,62,45,35,31,24,22,150].reduce((a,b)=>a+b,0),
+    indecisos: 664, abstencion: 236, blanco: 176, nulo: 73
+  }
+];
+
+let chartHistoricoIndex = null;
+
+function renderHistoricoIndex() {
+  const canvas = document.getElementById('chart-historico-index');
+  if (!canvas) return;
+  const pctN = (v, n) => n > 0 ? (v / n * 100) : 0;
+  const labels = BAROMETROS_DATA.map(b => b.mes);
+  const calc = b => ({
+    partidos:      parseFloat(pctN(b.partidos, b.muestra).toFixed(1)),
+    indecisos:     parseFloat(pctN(b.indecisos, b.muestra).toFixed(1)),
+    abstencion:    parseFloat(pctN(b.abstencion, b.muestra).toFixed(1)),
+    desperdiciados: parseFloat(pctN(b.blanco + b.nulo, b.muestra).toFixed(1)),
+  });
+  if (chartHistoricoIndex) chartHistoricoIndex.destroy();
+  chartHistoricoIndex = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Partidos',    data: BAROMETROS_DATA.map(b => calc(b).partidos),      borderColor: '#C0C0C0', backgroundColor: 'transparent', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#C0C0C0', pointBorderColor: '#fff', pointBorderWidth: 2, tension: 0.3, fill: false },
+        { label: 'Indecisos',   data: BAROMETROS_DATA.map(b => calc(b).indecisos),     borderColor: '#2F3A4A', backgroundColor: 'transparent', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#2F3A4A', pointBorderColor: '#fff', pointBorderWidth: 2, tension: 0.3, fill: false },
+        { label: 'Abstención',  data: BAROMETROS_DATA.map(b => calc(b).abstencion),    borderColor: '#FFD700', backgroundColor: 'transparent', borderWidth: 2, borderDash: [5,4], pointRadius: 5, pointBackgroundColor: '#FFD700', pointBorderColor: '#fff', pointBorderWidth: 2, tension: 0.3, fill: false },
+        { label: 'Blanco+Nulo', data: BAROMETROS_DATA.map(b => calc(b).desperdiciados),borderColor: '#111111', backgroundColor: 'transparent', borderWidth: 2, borderDash: [5,4], pointRadius: 5, pointBackgroundColor: '#111111', pointBorderColor: '#fff', pointBorderWidth: 2, tension: 0.3, fill: false },
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: "'IBM Plex Mono'", size: 11 }, color: '#555', boxWidth: 24, boxHeight: 2, padding: 14 } },
+        tooltip: { backgroundColor: '#111', titleColor: '#fff', bodyColor: '#C0C0C0', titleFont: { family: "'IBM Plex Mono'", size: 11 }, bodyFont: { family: "'IBM Plex Mono'", size: 11 }, padding: 10, callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}%` } }
+      },
+      scales: {
+        x: { ticks: { font: { family: "'IBM Plex Mono'", size: 11 }, color: '#8a8a8a' }, grid: { display: false } },
+        y: { min: 0, max: 80, ticks: { font: { family: "'IBM Plex Mono'", size: 11 }, color: '#8a8a8a', callback: v => v + '%', stepSize: 10 }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      }
+    }
+  });
+}
+
 </script>
 </body>
 </html>

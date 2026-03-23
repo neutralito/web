@@ -423,27 +423,7 @@
   }
 
   /* ── HISTÓRICO ── */
-  .historico-wrap {
-    margin-top: 60px;
-    padding-top: 40px;
-    border-top: 1px solid rgba(0,0,0,0.08);
-  }
-  .historico-titulo {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--silver-dark);
-    margin-bottom: 24px;
-  }
-  .historico-aviso {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--silver-dark);
-    padding: 16px 20px;
-    border: 1px solid rgba(0,0,0,0.08);
-    background: var(--white);
-  }
+
 
   /* ── SECCIÓN APARTE CIS ── */
   .seccion-aparte {
@@ -621,11 +601,6 @@
     <p class="nota-final" id="bloques-nota"></p>
   </div>
 
-  <!-- ── HISTÓRICO ── -->
-  <div class="historico-wrap">
-    <p class="historico-titulo">Evolución histórica — bloques</p>
-    <div id="historico-contenido"></div>
-  </div>
 
 </div>
 
@@ -719,7 +694,6 @@ const COLORES_BLOQUES = {
 // ══════════════════════════════════════════════
 let mesActual = 0;
 let vistaActual = 'cis';
-let chartHistorico = null;
 
 // ══════════════════════════════════════════════
 // UTILIDADES
@@ -888,140 +862,6 @@ function renderBloques(b, n, totalPartidos, desperdiciados) {
     `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Los cuatro bloques suman el 100% de la muestra.`;
 }
 
-// ══════════════════════════════════════════════
-// HISTÓRICO
-// ══════════════════════════════════════════════
-function renderHistorico() {
-  const wrap = document.getElementById('historico-contenido');
-
-  if (barometros.length < 2) {
-    wrap.innerHTML = `<p class="historico-aviso">El gráfico de evolución aparecerá cuando haya datos de al menos dos meses.</p>`;
-    return;
-  }
-
-  wrap.innerHTML = `<div style="max-width:700px"><canvas id="chart-historico"></canvas></div>`;
-
-  const labels = barometros.map(b => b.mes);
-  const calcBloques = b => {
-    const n = b.muestra;
-    const totalP = b.partidos.reduce((s,p) => s+p.votos, 0);
-    return {
-      partidos:      parseFloat(pctN(totalP, n).toFixed(1)),
-      indecisos:     parseFloat(pctN(b.indecisos, n).toFixed(1)),
-      abstencion:    parseFloat(pctN(b.abstencion, n).toFixed(1)),
-      desperdiciados: parseFloat(pctN(b.blanco + b.nulo, n).toFixed(1)),
-    };
-  };
-
-  if (chartHistorico) chartHistorico.destroy();
-  chartHistorico = new Chart(document.getElementById('chart-historico'), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Partidos',
-          data: barometros.map(b => calcBloques(b).partidos),
-          borderColor: '#C0C0C0',
-          backgroundColor: 'transparent',
-          borderWidth: 2.5,
-          pointRadius: 5,
-          pointBackgroundColor: '#C0C0C0',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          tension: 0.3,
-          fill: false,
-        },
-        {
-          label: 'Indecisos',
-          data: barometros.map(b => calcBloques(b).indecisos),
-          borderColor: '#2F3A4A',
-          backgroundColor: 'transparent',
-          borderWidth: 2.5,
-          pointRadius: 5,
-          pointBackgroundColor: '#2F3A4A',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          tension: 0.3,
-          fill: false,
-        },
-        {
-          label: 'Abstención',
-          data: barometros.map(b => calcBloques(b).abstencion),
-          borderColor: '#FFD700',
-          backgroundColor: 'transparent',
-          borderWidth: 2,
-          borderDash: [5, 4],
-          pointRadius: 5,
-          pointBackgroundColor: '#FFD700',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          tension: 0.3,
-          fill: false,
-        },
-        {
-          label: 'Blanco + Nulo',
-          data: barometros.map(b => calcBloques(b).desperdiciados),
-          borderColor: '#111111',
-          backgroundColor: 'transparent',
-          borderWidth: 2,
-          borderDash: [5, 4],
-          pointRadius: 5,
-          pointBackgroundColor: '#111111',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          tension: 0.3,
-          fill: false,
-        },
-      ]
-    },
-    options: {
-      responsive: true,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: {
-            font: { family: "'IBM Plex Mono'", size: 11 },
-            color: '#555',
-            boxWidth: 24,
-            boxHeight: 2,
-            padding: 16,
-            usePointStyle: false,
-          }
-        },
-        tooltip: {
-          backgroundColor: '#111',
-          titleColor: '#fff',
-          bodyColor: '#C0C0C0',
-          titleFont: { family: "'IBM Plex Mono'", size: 11 },
-          bodyFont: { family: "'IBM Plex Mono'", size: 11 },
-          padding: 12,
-          callbacks: {
-            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}%`
-          }
-        }
-      },
-      scales: {
-        x: {
-          ticks: { font: { family: "'IBM Plex Mono'", size: 11 }, color: '#8a8a8a' },
-          grid: { display: false },
-        },
-        y: {
-          min: 0,
-          max: 80,
-          ticks: {
-            font: { family: "'IBM Plex Mono'", size: 11 },
-            color: '#8a8a8a',
-            callback: v => v + '%',
-            stepSize: 10,
-          },
-          grid: { color: 'rgba(0,0,0,0.05)' }
-        }
-      }
-    }
-  });
-}
 
 // ══════════════════════════════════════════════
 // CAMBIO DE VISTA
@@ -1053,9 +893,10 @@ document.addEventListener('click', function(e) {
 // INIT
 // ══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
+  // Abrir último mes por defecto
+  mesActual = barometros.length - 1;
   renderMeses();
   renderVista();
-  renderHistorico();
 });
 </script>
 </body>
