@@ -519,15 +519,15 @@
 
 <!-- NAV -->
 <nav>
-  <a href="index.html#inicio" class="nav-brand">
+  <a href="index.html" class="nav-brand">
     <img src="imagenes/logo_neutralito.png" alt="Neutralito">
     <span class="nav-brand-text">Neutralito</span>
   </a>
   <div class="nav-tabs">
-    <a href="index.html#datos" class="nav-tab active">Datos</a>
-    <a href="index.html#elecciones" class="nav-tab">Elecciones</a>
-    <a href="index.html#conceptos" class="nav-tab">Conceptos</a>
-    <a href="index.html#actualidad" class="nav-tab">Actualidad</a>
+    <a href="datos.html" class="nav-tab active">Datos</a>
+    <a href="elecciones.html" class="nav-tab">Elecciones</a>
+    <a href="conceptos.html" class="nav-tab">Conceptos</a>
+    <a href="actualidad.html" class="nav-tab">Actualidad</a>
   </div>
   <div class="nav-hamburger" onclick="toggleMenu()" id="hamburger">
     <span></span><span></span><span></span>
@@ -543,11 +543,11 @@
 </nav>
 
 <div class="nav-mobile-menu" id="mobileMenu">
-  <a href="index.html#inicio" class="nav-mobile-item">Inicio</a>
-  <a href="index.html#datos" class="nav-mobile-item active">Datos</a>
-  <a href="index.html#elecciones" class="nav-mobile-item">Elecciones</a>
-  <a href="index.html#conceptos" class="nav-mobile-item">Conceptos</a>
-  <a href="index.html#actualidad" class="nav-mobile-item">Actualidad</a>
+  <a href="index.html" class="nav-mobile-item">Inicio</a>
+  <a href="datos.html" class="nav-mobile-item active">Datos</a>
+  <a href="elecciones.html" class="nav-mobile-item">Elecciones</a>
+  <a href="conceptos.html" class="nav-mobile-item">Conceptos</a>
+  <a href="actualidad.html" class="nav-mobile-item">Actualidad</a>
 </div>
 
 <!-- HERO -->
@@ -555,7 +555,7 @@
   <div class="hero-inner">
     <span class="hero-label">Barómetro CIS · Intención de voto</span>
     <h1 class="hero-titulo">El CIS<br>sin maquillaje</h1>
-    <p class="hero-subtitulo">Los mismos datos que publica el CIS, con la diferencia que importa: el denominador completo. Aquí los indecisos y la abstención no desaparecen del gráfico.</p>
+    <p class="hero-subtitulo">Los mismos datos que publica el CIS, pero con el censo completo. Aquí los indecisos y la abstención no desaparecen del gráfico.</p>
     <div class="mes-selector" id="mes-selector"></div>
   </div>
 </div>
@@ -563,8 +563,8 @@
 <!-- VISTAS TABS -->
 <div class="vistas-wrap">
   <div class="vistas-inner">
-    <div class="vista-tab active" onclick="cambiarVista('cis', event)">Como lo publican</div>
-    <div class="vista-tab" onclick="cambiarVista('neutralito', event)">El censo completo</div>
+    <div class="vista-tab active" onclick="cambiarVista('cis', event)">Como lo publica el CIS</div>
+    <div class="vista-tab" onclick="cambiarVista('neutralito', event)">El CIS de Neutralito</div>
     <div class="vista-tab" onclick="cambiarVista('bloques', event)">Por bloques</div>
   </div>
 </div>
@@ -587,7 +587,7 @@
 
   <!-- ── VISTA NEUTRALITO ── -->
   <div class="vista-panel" id="vista-neutralito">
-    <div class="vista-nota">% calculado sobre la muestra total. Todo el mundo cuenta — los que votan, los que dudan y los que no van a votar.</div>
+    <div class="vista-nota">El censo completo. % calculado sobre la muestra total — todo el mundo cuenta: los que votan, los que dudan y los que no van a votar.</div>
     <div class="datos-clave" id="neu-datos-clave"></div>
     <p class="barras-titulo">Estimación de voto — % sobre muestra total</p>
     <div id="neu-barras"></div>
