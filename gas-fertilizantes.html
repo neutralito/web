@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gas, fertilizantes y comida: la cadena que pocos explican — Neutralito</title>
+<meta name="description" content="El gas no es solo energía doméstica. Es la base de los fertilizantes que sostienen la agricultura europea. Una cadena que casi nadie explica.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://neutralito.github.io/web/actualidad/gas-fertilizantes.html">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://neutralito.github.io/web/actualidad/gas-fertilizantes.html">
+<meta property="og:title" content="Gas, fertilizantes y comida: la cadena que pocos explican — Neutralito">
+<meta property="og:description" content="El gas no es solo energía doméstica. Es la base de los fertilizantes que sostienen la agricultura europea.">
+<meta property="og:image" content="https://neutralito.github.io/web/imagenes/og_image.png">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="Neutralito">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@Neutralito_e">
+<meta name="twitter:title" content="Gas, fertilizantes y comida: la cadena que pocos explican — Neutralito">
+<meta name="twitter:description" content="El gas no es solo energía doméstica. Es la base de los fertilizantes que sostienen la agricultura europea.">
+<meta name="twitter:image" content="https://neutralito.github.io/web/imagenes/og_image.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../neutralito.css">
+
+<style>
+  :root {
+    --white:       #ffffff;
+    --off-white:   #f5f5f2;
+    --silver:      #C0C0C0;
+    --silver-dark: #8a8a8a;
+    --black:       #111111;
+    --black-soft:  #333333;
+    --gold:        #FFD700;
+    --azul:        #2F3A4A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV (idéntico al resto del proyecto) ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 300;
+    display: flex;
+    align-items: stretch;
+    height: 60px;
+    background: var(--white);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 24px;
+    text-decoration: none;
+    border-right: 1px solid rgba(0,0,0,0.08);
+    flex-shrink: 0;
+  }
+  .nav-brand img { height: 28px; width: auto; object-fit: contain; }
+  .nav-brand-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+  .nav-tabs {
+    display: flex;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+  .nav-tab:hover { color: var(--black); }
+  .nav-tab.active { color: var(--black); border-bottom-color: var(--black); }
+  .nav-social {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 20px;
+    border-left: 1px solid rgba(0,0,0,0.08);
+    flex-shrink: 0;
+  }
+  .nav-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px; height: 34px;
+    color: var(--silver-dark);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-social-link:hover { color: var(--black); }
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 20px;
+    cursor: pointer;
+    margin-left: auto;
+  }
+  .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--black); }
+  .nav-mobile-menu {
+    position: fixed;
+    top: 60px; left: 0; right: 0;
+    background: var(--white);
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    z-index: 299;
+    flex-direction: column;
+    display: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  @media (max-width: 768px) {
+    .nav-mobile-menu.open { display: flex !important; }
+    .nav-tabs { display: none; }
+    .nav-hamburger { display: flex; }
+    .nav-social { display: none; }
+  }
+  .nav-mobile-item {
+    padding: 16px 24px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    display: block;
+    transition: color 0.2s, background 0.2s;
+  }
+  .nav-mobile-item:hover { color: var(--black); background: var(--off-white); }
+  .nav-mobile-item.active { color: var(--black); font-weight: 700; }
+
+  /* ── CABECERA PIEZA ── */
+  .pieza-header {
+    margin-top: 60px;
+    background: var(--black);
+    padding: 56px 52px 48px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .pieza-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .pieza-badge {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: var(--gold);
+    color: var(--black);
+    padding: 4px 10px;
+  }
+  .pieza-fecha {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--silver);
+    opacity: 0.6;
+    text-transform: uppercase;
+  }
+  .pieza-titulo {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(24px, 6vw, 48px);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--white);
+    line-height: 1.1;
+    max-width: 780px;
+    margin-bottom: 20px;
+  }
+  .pieza-subtitulo {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: clamp(14px, 3.5vw, 16px);
+    font-weight: 300;
+    color: var(--silver);
+    opacity: 0.8;
+    max-width: 620px;
+    line-height: 1.7;
+  }
+
+  /* ── CONTENIDO ── */
+  .pieza-contenido {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 52px 52px 80px;
+  }
+
+  .bloque-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    font-weight: 500;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+
+  /* Dato principal */
+  .dato-principal {
+    background: var(--black);
+    border-left: 3px solid var(--gold);
+    padding: 28px 32px;
+    margin: 40px 0;
+  }
+  .dato-principal .bloque-label { color: var(--gold); border-color: rgba(255,215,0,0.2); }
+  .dato-texto {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--silver);
+    line-height: 1.8;
+  }
+
+  /* Cadena visual */
+  .cadena {
+    margin: 40px 0;
+    background: var(--off-white);
+    border: 1px solid rgba(0,0,0,0.07);
+    padding: 28px 24px;
+  }
+  .cadena-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .cadena-item {
+    text-align: center;
+    padding: 6px 10px;
+    min-width: 70px;
+  }
+  .cadena-item .icono { font-size: 1.4rem; display: block; margin-bottom: 5px; }
+  .cadena-item .nombre {
+    font-family: 'Oswald', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--azul);
+  }
+  .cadena-flecha {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1rem;
+    color: var(--gold);
+    padding: 0 2px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .cadena-nota {
+    width: 100%;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--silver-dark);
+    margin-top: 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Contexto */
+  .bloque-contexto { margin: 40px 0; }
+  .bloque-contexto p {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--black-soft);
+    line-height: 1.85;
+    margin-bottom: 16px;
+  }
+
+  /* Proveedores */
+  .bloque-proveedores { margin: 40px 0; }
+  .proveedores-intro {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--black-soft);
+    line-height: 1.75;
+    margin-bottom: 24px;
+  }
+  .pais-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .pais-card {
+    background: var(--off-white);
+    border: 1px solid rgba(0,0,0,0.07);
+    border-top: 3px solid var(--black);
+    padding: 20px;
+  }
+  .pais-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .pais-flag { font-size: 1.6rem; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+  .pais-nombre {
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--black);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .pais-estado {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    display: inline-block;
+  }
+  .pais-estado--reducido { background: rgba(47,58,74,0.12); color: var(--azul); }
+  .pais-estado--parado   { background: rgba(17,17,17,0.08); color: var(--black); }
+  .pais-estado--danado   { background: rgba(255,215,0,0.25); color: #7a6000; }
+  .pais-texto {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--black-soft);
+    line-height: 1.7;
+  }
+
+  /* Reflexión */
+  .bloque-reflexion {
+    background: var(--azul);
+    border-left: 3px solid var(--silver);
+    padding: 28px 32px;
+    margin: 40px 0;
+  }
+  .bloque-reflexion .bloque-label { color: var(--silver); opacity: 0.5; border-color: rgba(255,255,255,0.1); }
+  .bloque-reflexion p {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--silver);
+    line-height: 1.85;
+    margin-top: 4px;
+  }
+
+  /* ── FOOTER (idéntico al resto del proyecto) ── */
+  footer {
+    background: var(--off-white);
+    border-top: 1px solid rgba(0,0,0,0.07);
+    padding: 40px 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-marca { display: flex; align-items: center; gap: 8px; }
+  .footer-marca img { height: 22px; }
+  .footer-marca-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+  .footer-social { display: flex; gap: 20px; align-items: center; }
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .social-link:hover { color: var(--black); }
+  .footer-copy {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--silver-dark);
+  }
+
+  @media (max-width: 768px) {
+    .pieza-header { padding: 32px 20px 28px; }
+    .pieza-contenido { padding: 28px 20px 52px; }
+
+    .dato-principal { padding: 20px; margin: 28px 0; }
+    .bloque-reflexion { padding: 20px; margin: 28px 0; }
+    .bloque-contexto { margin: 28px 0; }
+
+    /* Cadena: vertical en móvil */
+    .cadena { padding: 24px 16px; margin: 28px 0; }
+    .cadena-inner { flex-direction: column; align-items: center; gap: 0; }
+    .cadena-flecha {
+      transform: rotate(90deg);
+      display: block;
+      font-size: 1.1rem;
+      padding: 2px 0;
+      line-height: 1;
+    }
+    .cadena-item { padding: 4px 10px; }
+    .cadena-nota { margin-top: 20px; font-size: 9px; }
+
+    .pais-grid { grid-template-columns: 1fr; gap: 10px; }
+    .bloque-proveedores { margin: 28px 0; }
+    footer { padding: 28px 20px; flex-direction: column; align-items: center; text-align: center; }
+  }
+</style>
+
+<script defer src="https://cloud.umami.is/script.js" data-website-id="a4884acc-6164-420b-81f0-c24fb1109fbe"></script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="../index.html" class="nav-brand">
+    <img src="../imagenes/logo_neutralito.png" alt="Neutralito">
+    <span class="nav-brand-text">Neutralito</span>
+  </a>
+  <div class="nav-tabs">
+    <a href="../datos.html" class="nav-tab">Datos</a>
+    <a href="../elecciones.html" class="nav-tab">Elecciones</a>
+    <a href="../conceptos.html" class="nav-tab">Conceptos</a>
+    <a href="../actualidad.html" class="nav-tab active">Actualidad</a>
+  </div>
+  <div class="nav-hamburger" onclick="toggleMenu()" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="nav-social">
+    <a href="https://t.me/neutralito" target="_blank" class="nav-social-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 14.36l-2.945-.918c-.64-.203-.658-.64.135-.953l11.57-4.461c.537-.194 1.006.131.964.193z"/></svg>
+    </a>
+    <a href="https://x.com/Neutralito_e" target="_blank" class="nav-social-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<div class="nav-mobile-menu" id="mobileMenu">
+  <a href="../index.html" class="nav-mobile-item">Inicio</a>
+  <a href="../datos.html" class="nav-mobile-item">Datos</a>
+  <a href="../elecciones.html" class="nav-mobile-item">Elecciones</a>
+  <a href="../conceptos.html" class="nav-mobile-item">Conceptos</a>
+  <a href="../actualidad.html" class="nav-mobile-item active">Actualidad</a>
+</div>
+
+<!-- CABECERA -->
+<header class="pieza-header">
+  <div class="pieza-meta">
+    <span class="pieza-badge">Actualidad</span>
+    <span class="pieza-fecha">Marzo 2026</span>
+  </div>
+  <h1 class="pieza-titulo">Gas, fertilizantes y comida:<br>la cadena que pocos explican</h1>
+  <p class="pieza-subtitulo">
+    El gas no es solo energía doméstica. Es la materia prima de los fertilizantes que sostienen la agricultura europea. Europa no produce suficiente de ninguna de las dos cosas.
+  </p>
+</header>
+
+<!-- CONTENIDO -->
+<main class="pieza-contenido">
+
+  <div class="dato-principal">
+    <div class="bloque-label">La conexión que nadie cuenta</div>
+    <p class="dato-texto">
+      El gas natural se usa para fabricar amoniaco. El amoniaco es la base de la urea. La urea es el componente principal de los fertilizantes sintéticos. Sin fertilizantes, el rendimiento agrícola cae. Sin rendimiento, sube el precio de los alimentos. La cadena es directa — y casi nunca aparece en el debate público.
+    </p>
+  </div>
+
+  <div class="cadena">
+    <div class="cadena-inner">
+      <div class="cadena-item">
+        <span class="icono">🔥</span>
+        <span class="nombre">Gas natural</span>
+      </div>
+      <span class="cadena-flecha">→</span>
+      <div class="cadena-item">
+        <span class="icono">⚗️</span>
+        <span class="nombre">Amoniaco</span>
+      </div>
+      <span class="cadena-flecha">→</span>
+      <div class="cadena-item">
+        <span class="icono">🧪</span>
+        <span class="nombre">Urea</span>
+      </div>
+      <span class="cadena-flecha">→</span>
+      <div class="cadena-item">
+        <span class="icono">🌱</span>
+        <span class="nombre">Fertilizante</span>
+      </div>
+      <span class="cadena-flecha">→</span>
+      <div class="cadena-item">
+        <span class="icono">🌾</span>
+        <span class="nombre">Cosecha</span>
+      </div>
+      <span class="cadena-flecha">→</span>
+      <div class="cadena-item">
+        <span class="icono">🛒</span>
+        <span class="nombre">Precio final</span>
+      </div>
+    </div>
+    <p class="cadena-nota">Proceso Haber-Bosch · Base de la agricultura industrial moderna</p>
+  </div>
+
+  <div class="bloque-contexto">
+    <div class="bloque-label">Contexto</div>
+    <p>
+      La agricultura moderna depende de los fertilizantes nitrogenados para mantener sus rendimientos. No es una opción — es la base sobre la que funciona el sistema alimentario industrial desde hace décadas.
+    </p>
+    <p>
+      Esos fertilizantes se fabrican a partir del amoniaco mediante el proceso Haber-Bosch. Y el amoniaco se produce, principalmente, con gas natural. Cuando el precio del gas sube o el suministro se interrumpe, las plantas de fertilizantes reducen producción o paran. Eso ya ocurrió en Europa en 2022, cuando varios fabricantes detuvieron operaciones ante los precios del gas tras la invasión de Ucrania.
+    </p>
+    <p>
+      Europa no es autosuficiente ni en gas ni en producción agrícola. Ha reducido su sector primario — campo, ganadería, pesca — durante décadas, dependiendo cada vez más de importaciones y cadenas logísticas largas. Eso limita su capacidad de reacción ante cualquier shock externo.
+    </p>
+  </div>
+
+  <div class="bloque-proveedores">
+    <div class="bloque-label">De dónde viene la urea que usa Europa</div>
+    <p class="proveedores-intro">Cuatro países concentran la mayor parte de la producción y exportación mundial de urea. En 2026, ninguno de los cuatro suministra con normalidad.</p>
+
+    <div class="pais-grid">
+
+      <div class="pais-card">
+        <div class="pais-header">
+          <span class="pais-flag">🇷🇺</span>
+          <div>
+            <div class="pais-nombre">Rusia</div>
+            <div class="pais-estado pais-estado--reducido">Exportación reducida</div>
+          </div>
+        </div>
+        <p class="pais-texto">Mayor exportador mundial de fertilizantes. Desde las sanciones de 2022, redirige su producción hacia Asia. Europa compra menos y a través de intermediarios, lo que encarece el producto final.</p>
+      </div>
+
+      <div class="pais-card">
+        <div class="pais-header">
+          <span class="pais-flag">🇨🇳</span>
+          <div>
+            <div class="pais-nombre">China</div>
+            <div class="pais-estado pais-estado--parado">Exportaciones detenidas</div>
+          </div>
+        </div>
+        <p class="pais-texto">Mayor productor mundial de urea, con cerca de un tercio de la oferta global. Ante la escalada del conflicto en Oriente Medio, ha restringido sus exportaciones para proteger su mercado interno.</p>
+      </div>
+
+      <div class="pais-card">
+        <div class="pais-header">
+          <span class="pais-flag">🇶🇦</span>
+          <div>
+            <div class="pais-nombre">Qatar</div>
+            <div class="pais-estado pais-estado--danado">Infraestructura dañada</div>
+          </div>
+        </div>
+        <p class="pais-texto">Uno de los mayores exportadores mundiales de gas licuado y fertilizantes. Los ataques iraníes han afectado parte de su infraestructura de exportación. La reparación lleva tiempo.</p>
+      </div>
+
+      <div class="pais-card">
+        <div class="pais-header">
+          <span class="pais-flag">🇦🇪</span>
+          <div>
+            <div class="pais-nombre">Emiratos Árabes</div>
+            <div class="pais-estado pais-estado--danado">Infraestructura dañada</div>
+          </div>
+        </div>
+        <p class="pais-texto">Exportador relevante de fertilizantes, azufre y petroquímicos. Activos energéticos y de producción en la región han sufrido daños directos como consecuencia del conflicto.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="bloque-reflexion">
+    <div class="bloque-label">Para pensar</div>
+    <p>
+      Europa depende de estos cuatro países para una parte sustancial de los fertilizantes que usa su agricultura. Cuando los cuatro fallan a la vez — por sanciones, por decisión política o por daños físicos — no hay sustituto inmediato. El precio de la urea ya ha subido. El campo lo nota primero. El consumidor, después.
+    </p>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-marca">
+    <img src="../imagenes/logo_neutralito.png" alt="Neutralito">
+    <span class="footer-marca-text">Neutralito</span>
+  </div>
+  <div class="footer-social">
+    <a href="https://t.me/neutralito" target="_blank" class="social-link">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 14.36l-2.945-.918c-.64-.203-.658-.64.135-.953l11.57-4.461c.537-.194 1.006.131.964.193z"/></svg>
+      Telegram
+    </a>
+    <a href="https://x.com/Neutralito_e" target="_blank" class="social-link">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      X
+    </a>
+  </div>
+  <div class="footer-copy"><strong style="color:var(--black)">© Neutralito 2026</strong></div>
+</footer>
+
+<script>
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('mobileMenu');
+  const hamburger = document.getElementById('hamburger');
+  if (menu && hamburger && !menu.contains(e.target) && !hamburger.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>

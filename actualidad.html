@@ -204,6 +204,73 @@
     max-width: 640px;
   }
 
+  /* Tarjetas de piezas */
+  .articulos { margin-top: 52px; display: flex; flex-direction: column; gap: 1px; }
+  .articulo-card {
+    display: block;
+    text-decoration: none;
+    background: var(--white);
+    border: 1px solid rgba(0,0,0,0.07);
+    padding: 28px 32px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .articulo-card:hover {
+    border-color: rgba(0,0,0,0.18);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+  .articulo-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .articulo-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: var(--black);
+    color: #FFD700;
+    padding: 3px 8px;
+  }
+  .articulo-fecha {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+  }
+  .articulo-titulo {
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--black);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .articulo-desc {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--silver-dark);
+    line-height: 1.7;
+  }
+  .articulo-arrow {
+    margin-top: 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+
+  @media (max-width: 768px) {
+    .articulo-card { padding: 20px; }
+  }
+
   footer {
     background: var(--off-white);
     border-top: 1px solid rgba(0,0,0,0.07);
@@ -290,10 +357,21 @@
 
 <div class="inner-page">
   <div class="inner-page-inner">
-    <span class="page-badge">Próximamente</span>
     <h1 class="page-titulo">🌍 Actualidad</h1>
     <div class="page-divider"></div>
     <p class="page-texto">Lo que pasa fuera y nadie cuenta. Noticias ignoradas y temas de interés que deben estar en el debate público. Contexto internacional para entender lo que nos afecta.</p>
+
+    <div class="articulos">
+      <a href="actualidad/gas-fertilizantes.html" class="articulo-card">
+        <div class="articulo-meta">
+          <span class="articulo-tag">Geopolítica</span>
+          <span class="articulo-fecha">Marzo 2026</span>
+        </div>
+        <div class="articulo-titulo">Gas, fertilizantes y comida: la cadena que pocos explican</div>
+        <p class="articulo-desc">El gas no es solo energía doméstica. Es la materia prima de los fertilizantes que sostienen la agricultura europea. Una conexión que rara vez aparece en el debate público.</p>
+        <div class="articulo-arrow">Leer →</div>
+      </a>
+    </div>
   </div>
 </div>
 
