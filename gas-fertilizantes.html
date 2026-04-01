@@ -24,7 +24,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../neutralito.css">
+<link rel="stylesheet" href="neutralito.css">
 
 <style>
   :root {
@@ -167,14 +167,15 @@
   .pieza-header {
     margin-top: 60px;
     background: var(--black);
-    padding: 56px 52px 48px;
+    padding: 32px 20px 28px;
     border-bottom: 3px solid var(--gold);
   }
   .pieza-meta {
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
   }
   .pieza-badge {
     font-family: 'Oswald', sans-serif;
@@ -185,6 +186,7 @@
     background: var(--gold);
     color: var(--black);
     padding: 4px 10px;
+    flex-shrink: 0;
   }
   .pieza-fecha {
     font-family: 'IBM Plex Mono', monospace;
@@ -196,22 +198,20 @@
   }
   .pieza-titulo {
     font-family: 'Oswald', sans-serif;
-    font-size: clamp(24px, 6vw, 48px);
+    font-size: clamp(26px, 6vw, 48px);
     font-weight: 700;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
     text-transform: uppercase;
     color: var(--white);
     line-height: 1.1;
-    max-width: 780px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
   .pieza-subtitulo {
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: clamp(14px, 3.5vw, 16px);
     font-weight: 300;
     color: var(--silver);
-    opacity: 0.8;
-    max-width: 620px;
+    opacity: 0.85;
     line-height: 1.7;
   }
 
@@ -219,7 +219,7 @@
   .pieza-contenido {
     max-width: 740px;
     margin: 0 auto;
-    padding: 52px 52px 80px;
+    padding: 28px 20px 72px;
   }
 
   .bloque-label {
@@ -229,7 +229,7 @@
     text-transform: uppercase;
     color: var(--silver-dark);
     font-weight: 500;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     padding-bottom: 10px;
     border-bottom: 1px solid rgba(0,0,0,0.08);
   }
@@ -238,8 +238,8 @@
   .dato-principal {
     background: var(--black);
     border-left: 3px solid var(--gold);
-    padding: 28px 32px;
-    margin: 40px 0;
+    padding: 22px 20px;
+    margin: 32px 0;
   }
   .dato-principal .bloque-label { color: var(--gold); border-color: rgba(255,215,0,0.2); }
   .dato-texto {
@@ -250,29 +250,33 @@
     line-height: 1.8;
   }
 
-  /* Cadena visual */
+  /* Cadena visual — vertical por defecto (mobile first) */
   .cadena {
-    margin: 40px 0;
+    margin: 32px 0;
     background: var(--off-white);
     border: 1px solid rgba(0,0,0,0.07);
-    padding: 28px 24px;
+    padding: 24px 16px;
   }
   .cadena-inner {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
     gap: 0;
   }
   .cadena-item {
     text-align: center;
-    padding: 6px 10px;
-    min-width: 70px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 240px;
+    justify-content: center;
   }
-  .cadena-item .icono { font-size: 1.4rem; display: block; margin-bottom: 5px; }
+  .cadena-item .icono { font-size: 1.5rem; display: block; flex-shrink: 0; }
   .cadena-item .nombre {
     font-family: 'Oswald', sans-serif;
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -280,95 +284,99 @@
   }
   .cadena-flecha {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 1rem;
+    font-size: 1.2rem;
     color: var(--gold);
-    padding: 0 2px;
     font-weight: 700;
     flex-shrink: 0;
+    display: block;
+    text-align: center;
+    line-height: 1;
+    padding: 2px 0;
+    transform: rotate(90deg);
   }
   .cadena-nota {
     width: 100%;
     text-align: center;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
+    font-size: 9px;
     color: var(--silver-dark);
-    margin-top: 16px;
+    margin-top: 18px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
   /* Contexto */
-  .bloque-contexto { margin: 40px 0; }
+  .bloque-contexto { margin: 32px 0; }
   .bloque-contexto p {
     font-size: 15px;
     font-weight: 300;
     color: var(--black-soft);
     line-height: 1.85;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
 
   /* Proveedores */
-  .bloque-proveedores { margin: 40px 0; }
+  .bloque-proveedores { margin: 32px 0; }
   .proveedores-intro {
     font-size: 15px;
     font-weight: 300;
     color: var(--black-soft);
     line-height: 1.75;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
   .pais-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
   .pais-card {
     background: var(--off-white);
     border: 1px solid rgba(0,0,0,0.07);
     border-top: 3px solid var(--black);
-    padding: 20px;
+    padding: 18px;
   }
   .pais-header {
     display: flex;
     align-items: flex-start;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
-  .pais-flag { font-size: 1.6rem; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+  .pais-flag { font-size: 1.8rem; line-height: 1; flex-shrink: 0; margin-top: 2px; }
   .pais-nombre {
     font-family: 'Oswald', sans-serif;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--black);
     line-height: 1.2;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
   }
   .pais-estado {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 2px 7px;
+    padding: 3px 8px;
     display: inline-block;
   }
   .pais-estado--reducido { background: rgba(47,58,74,0.12); color: var(--azul); }
   .pais-estado--parado   { background: rgba(17,17,17,0.08); color: var(--black); }
   .pais-estado--danado   { background: rgba(255,215,0,0.25); color: #7a6000; }
   .pais-texto {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 300;
     color: var(--black-soft);
-    line-height: 1.7;
+    line-height: 1.75;
   }
 
   /* Reflexión */
   .bloque-reflexion {
     background: var(--azul);
     border-left: 3px solid var(--silver);
-    padding: 28px 32px;
-    margin: 40px 0;
+    padding: 22px 20px;
+    margin: 32px 0;
   }
   .bloque-reflexion .bloque-label { color: var(--silver); opacity: 0.5; border-color: rgba(255,255,255,0.1); }
   .bloque-reflexion p {
@@ -379,11 +387,46 @@
     margin-top: 4px;
   }
 
-  /* ── FOOTER (idéntico al resto del proyecto) ── */
+  /* ── CTA TELEGRAM ── */
+  .cta-telegram {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #0088cc;
+    padding: 22px 20px;
+    text-decoration: none;
+    margin: 32px 0 0;
+    transition: background 0.2s;
+  }
+  .cta-telegram:hover { background: #007ab8; }
+  .cta-telegram-icon { flex-shrink: 0; color: #fff; display: flex; align-items: center; }
+  .cta-telegram-texto { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .cta-telegram-titulo {
+    font-family: 'Oswald', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  .cta-telegram-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+  }
+  .cta-telegram-flecha {
+    font-size: 20px;
+    color: rgba(255,255,255,0.6);
+    flex-shrink: 0;
+  }
+
+  /* ── FOOTER ── */
   footer {
     background: var(--off-white);
     border-top: 1px solid rgba(0,0,0,0.07);
-    padding: 40px 52px;
+    padding: 28px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -422,30 +465,23 @@
     color: var(--silver-dark);
   }
 
-  @media (max-width: 768px) {
-    .pieza-header { padding: 32px 20px 28px; }
-    .pieza-contenido { padding: 28px 20px 52px; }
-
-    .dato-principal { padding: 20px; margin: 28px 0; }
-    .bloque-reflexion { padding: 20px; margin: 28px 0; }
-    .bloque-contexto { margin: 28px 0; }
-
-    /* Cadena: vertical en móvil */
-    .cadena { padding: 24px 16px; margin: 28px 0; }
-    .cadena-inner { flex-direction: column; align-items: center; gap: 0; }
-    .cadena-flecha {
-      transform: rotate(90deg);
-      display: block;
-      font-size: 1.1rem;
-      padding: 2px 0;
-      line-height: 1;
-    }
-    .cadena-item { padding: 4px 10px; }
-    .cadena-nota { margin-top: 20px; font-size: 9px; }
-
-    .pais-grid { grid-template-columns: 1fr; gap: 10px; }
-    .bloque-proveedores { margin: 28px 0; }
-    footer { padding: 28px 20px; flex-direction: column; align-items: center; text-align: center; }
+  /* ── ESCRITORIO — escala desde móvil ── */
+  @media (min-width: 640px) {
+    .pieza-header { padding: 52px 52px 44px; }
+    .pieza-contenido { padding: 48px 52px 80px; }
+    .dato-principal { padding: 28px 32px; margin: 40px 0; }
+    .bloque-reflexion { padding: 28px 32px; margin: 40px 0; }
+    .bloque-contexto { margin: 40px 0; }
+    .bloque-proveedores { margin: 40px 0; }
+    .cadena { padding: 28px 24px; margin: 40px 0; }
+    .cadena-inner { flex-direction: row; justify-content: center; }
+    .cadena-item { flex-direction: column; gap: 0; max-width: none; width: auto; }
+    .cadena-item .icono { margin-bottom: 5px; }
+    .cadena-flecha { transform: none; padding: 0 2px; }
+    .pais-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    footer { padding: 40px 52px; }
+    .cta-telegram { padding: 24px 28px; gap: 20px; }
+    .cta-telegram-titulo { font-size: 18px; }
   }
 </style>
 
@@ -455,15 +491,15 @@
 
 <!-- NAV -->
 <nav>
-  <a href="../index.html" class="nav-brand">
-    <img src="../imagenes/logo_neutralito.png" alt="Neutralito">
+  <a href="index.html" class="nav-brand">
+    <img src="imagenes/logo_neutralito.png" alt="Neutralito">
     <span class="nav-brand-text">Neutralito</span>
   </a>
   <div class="nav-tabs">
-    <a href="../datos.html" class="nav-tab">Datos</a>
-    <a href="../elecciones.html" class="nav-tab">Elecciones</a>
-    <a href="../conceptos.html" class="nav-tab">Conceptos</a>
-    <a href="../actualidad.html" class="nav-tab active">Actualidad</a>
+    <a href="datos.html" class="nav-tab">Datos</a>
+    <a href="elecciones.html" class="nav-tab">Elecciones</a>
+    <a href="conceptos.html" class="nav-tab">Conceptos</a>
+    <a href="actualidad.html" class="nav-tab active">Actualidad</a>
   </div>
   <div class="nav-hamburger" onclick="toggleMenu()" id="hamburger">
     <span></span><span></span><span></span>
@@ -479,18 +515,18 @@
 </nav>
 
 <div class="nav-mobile-menu" id="mobileMenu">
-  <a href="../index.html" class="nav-mobile-item">Inicio</a>
-  <a href="../datos.html" class="nav-mobile-item">Datos</a>
-  <a href="../elecciones.html" class="nav-mobile-item">Elecciones</a>
-  <a href="../conceptos.html" class="nav-mobile-item">Conceptos</a>
-  <a href="../actualidad.html" class="nav-mobile-item active">Actualidad</a>
+  <a href="index.html" class="nav-mobile-item">Inicio</a>
+  <a href="datos.html" class="nav-mobile-item">Datos</a>
+  <a href="elecciones.html" class="nav-mobile-item">Elecciones</a>
+  <a href="conceptos.html" class="nav-mobile-item">Conceptos</a>
+  <a href="actualidad.html" class="nav-mobile-item active">Actualidad</a>
 </div>
 
 <!-- CABECERA -->
 <header class="pieza-header">
   <div class="pieza-meta">
     <span class="pieza-badge">Actualidad</span>
-    <span class="pieza-fecha">Marzo 2026</span>
+    <span class="pieza-fecha">1 de abril de 2026</span>
   </div>
   <h1 class="pieza-titulo">Gas, fertilizantes y comida:<br>la cadena que pocos explican</h1>
   <p class="pieza-subtitulo">
@@ -616,12 +652,24 @@
     </p>
   </div>
 
+  <!-- CTA TELEGRAM -->
+  <a href="https://t.me/neutralito" target="_blank" class="cta-telegram">
+    <div class="cta-telegram-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 14.36l-2.945-.918c-.64-.203-.658-.64.135-.953l11.57-4.461c.537-.194 1.006.131.964.193z"/></svg>
+    </div>
+    <div class="cta-telegram-texto">
+      <span class="cta-telegram-titulo">Más análisis como este</span>
+      <span class="cta-telegram-sub">Únete al canal de Telegram — sin agenda, sin filtros</span>
+    </div>
+    <span class="cta-telegram-flecha">→</span>
+  </a>
+
 </main>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-marca">
-    <img src="../imagenes/logo_neutralito.png" alt="Neutralito">
+    <img src="imagenes/logo_neutralito.png" alt="Neutralito">
     <span class="footer-marca-text">Neutralito</span>
   </div>
   <div class="footer-social">
