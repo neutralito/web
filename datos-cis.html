@@ -4,106 +4,568 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Barómetro CIS — Neutralito · Datos sin maquillaje</title>
-<meta name="description" content="El barómetro del CIS tal como es: con abstención, indecisos y denominador completo.">
+<meta name="description" content="El barómetro del CIS tal como es: con abstención, indecisos y denominador completo. Lo que los medios no te muestran.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root { --white:#ffffff; --off-white:#f5f5f2; --silver:#C0C0C0; --silver-dark:#8a8a8a; --black:#111111; --black-soft:#333333; --gold:#FFD700; }
-* { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
-body { background:var(--off-white); color:var(--black); font-family:'IBM Plex Sans',sans-serif; font-weight:300; line-height:1.6; }
-nav { position:fixed; top:0; left:0; right:0; z-index:300; display:flex; align-items:stretch; height:60px; background:var(--white); border-bottom:1px solid rgba(0,0,0,0.08); }
-.nav-brand { display:flex; align-items:center; gap:8px; padding:0 24px; text-decoration:none; border-right:1px solid rgba(0,0,0,0.08); cursor:pointer; flex-shrink:0; }
-.nav-brand img { height:28px; width:auto; object-fit:contain; }
-.nav-brand-text { font-family:'Oswald',sans-serif; font-size:15px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--black); }
-.nav-tabs { display:flex; flex:1; overflow-x:auto; align-items:center; padding:0 24px; scrollbar-width:none; }
-.nav-tabs::-webkit-scrollbar { display:none; }
-.nav-tab { display:flex; align-items:center; padding:0 20px; height:100%; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--silver-dark); cursor:pointer; border-bottom:2px solid transparent; transition:color 0.2s,border-color 0.2s; white-space:nowrap; text-decoration:none; }
-.nav-tab:hover { color:var(--black); }
-.nav-tab.active { color:var(--black); border-bottom-color:var(--black); }
-.nav-social { display:flex; align-items:center; gap:4px; padding:0 20px; border-left:1px solid rgba(0,0,0,0.08); flex-shrink:0; }
-.nav-social-link { display:flex; align-items:center; justify-content:center; width:34px; height:34px; color:var(--silver-dark); text-decoration:none; transition:color 0.2s; }
-.nav-social-link:hover { color:var(--black); }
-.nav-hamburger { display:none; flex-direction:column; justify-content:center; gap:5px; padding:0 20px; cursor:pointer; margin-left:auto; }
-.nav-hamburger span { display:block; width:22px; height:2px; background:var(--black); }
-.nav-mobile-menu { position:fixed; top:60px; left:0; right:0; background:var(--white); border-bottom:2px solid rgba(0,0,0,0.1); z-index:299; flex-direction:column; display:none; box-shadow:0 8px 24px rgba(0,0,0,0.1); }
-.nav-mobile-item { padding:16px 24px; font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--silver-dark); cursor:pointer; border-bottom:1px solid rgba(0,0,0,0.05); text-decoration:none; display:block; }
-.nav-mobile-item:hover { color:var(--black); background:var(--off-white); }
-.nav-mobile-item.active { color:var(--black); font-weight:700; }
-@media (max-width:768px) { .nav-tabs { display:none; } .nav-hamburger { display:flex; } .nav-social { display:none; } .nav-mobile-menu.open { display:flex !important; } }
-.hero { background:var(--black); padding:100px 52px 48px; border-bottom:3px solid var(--gold); }
-.hero-inner { max-width:900px; margin:0 auto; }
-.hero-label { font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:500; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; display:block; }
-.hero-titulo { font-family:'Oswald',sans-serif; font-size:clamp(36px,6vw,68px); font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--white); line-height:1; margin-bottom:20px; }
-.hero-subtitulo { font-size:15px; font-weight:300; color:var(--silver); max-width:600px; line-height:1.7; margin-bottom:32px; }
-.mes-selector { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-.mes-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--silver-dark); }
-.mes-btn { font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--silver-dark); background:none; border:1px solid rgba(255,255,255,0.1); padding:6px 14px; cursor:pointer; transition:all 0.2s; }
-.mes-btn:hover { color:var(--white); border-color:rgba(255,255,255,0.3); }
-.mes-btn.active { color:var(--black); background:var(--gold); border-color:var(--gold); }
-.vistas-wrap { background:var(--white); border-bottom:1px solid rgba(0,0,0,0.08); position:sticky; top:60px; z-index:100; }
-.vistas-inner { max-width:900px; margin:0 auto; display:flex; padding:0 52px; }
-.vista-tab { font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--silver-dark); padding:16px 20px; cursor:pointer; border-bottom:2px solid transparent; transition:all 0.2s; white-space:nowrap; }
-.vista-tab:hover { color:var(--black); }
-.vista-tab.active { color:var(--black); border-bottom-color:var(--black); }
-@media (max-width:768px) { .vistas-inner { padding:0 16px; overflow-x:auto; scrollbar-width:none; } .vistas-inner::-webkit-scrollbar { display:none; } }
-.contenido { max-width:900px; margin:0 auto; padding:48px 52px 80px; }
-@media (max-width:768px) { .hero { padding:88px 24px 40px; } .contenido { padding:32px 24px 60px; } }
-.vista-panel { display:none; }
-.vista-panel.active { display:block; }
-.datos-clave { display:flex; gap:2px; margin-bottom:40px; flex-wrap:wrap; }
-.dato-clave { flex:1; min-width:120px; background:var(--white); padding:20px 18px; display:flex; flex-direction:column; gap:4px; }
-.dato-clave-valor { font-family:'Oswald',sans-serif; font-size:28px; font-weight:700; color:var(--black); line-height:1; }
-.dato-clave-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--silver-dark); }
-.dato-clave.aparte { background:rgba(0,0,0,0.03); border-left:3px solid rgba(0,0,0,0.15); }
-.dato-clave.aparte .dato-clave-valor { color:var(--silver-dark); }
-.vista-nota { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--silver-dark); letter-spacing:0.06em; margin-bottom:28px; padding:10px 14px; border-left:3px solid var(--gold); background:var(--white); }
-.barras-titulo { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--silver-dark); margin-bottom:16px; }
-.barra-row { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
-.barra-siglas { font-family:'Oswald',sans-serif; font-size:12px; font-weight:600; letter-spacing:0.06em; color:var(--black); width:100px; flex-shrink:0; text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.barra-wrap { flex:1; background:rgba(0,0,0,0.06); height:26px; display:flex; align-items:center; overflow:visible; position:relative; }
-.barra-fill { height:100%; min-width:2px; flex-shrink:0; transition:width 0.6s ease; }
-.barra-pct { font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; color:var(--black); white-space:nowrap; padding-left:8px; flex-shrink:0; }
-@media (max-width:600px) { .barra-siglas { width:72px; font-size:11px; } .barra-pct { font-size:10px; } }
-.bloques-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; margin-bottom:40px; }
-@media (max-width:600px) { .bloques-grid { grid-template-columns:1fr; } }
-.bloque-card { background:var(--white); padding:28px 24px; }
-.bloque-card.dark { background:var(--black); }
-.bloque-pct { font-family:'Oswald',sans-serif; font-size:clamp(48px,8vw,72px); font-weight:700; line-height:1; margin-bottom:8px; }
-.bloque-card.dark .bloque-pct { color:var(--white); }
-.bloque-card:not(.dark) .bloque-pct { color:var(--black); }
-.bloque-nombre { font-family:'Oswald',sans-serif; font-size:14px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px; }
-.bloque-card.dark .bloque-nombre { color:var(--silver); }
-.bloque-card:not(.dark) .bloque-nombre { color:var(--black-soft); }
-.bloque-desc { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--silver-dark); letter-spacing:0.06em; line-height:1.5; }
-.bloque-barra { height:4px; margin-top:20px; transition:width 0.6s ease; }
-.seccion-aparte { margin-top:40px; padding:24px 28px; background:rgba(0,0,0,0.03); border-left:3px solid rgba(0,0,0,0.1); }
-.seccion-aparte-titulo { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--silver-dark); margin-bottom:16px; }
-.aparte-grid { display:flex; gap:32px; flex-wrap:wrap; }
-.aparte-item { display:flex; flex-direction:column; gap:3px; }
-.aparte-valor { font-family:'Oswald',sans-serif; font-size:22px; font-weight:600; color:var(--silver-dark); }
-.aparte-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--silver-dark); }
-.nota-final { font-size:12px; color:var(--silver-dark); margin-top:36px; padding-top:20px; border-top:1px solid rgba(0,0,0,0.07); line-height:1.7; }
-.cargando { text-align:center; padding:80px 0; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.15em; text-transform:uppercase; color:var(--silver-dark); }
-footer { background:var(--off-white); border-top:1px solid rgba(0,0,0,0.07); padding:32px 52px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
-.footer-marca { display:flex; align-items:center; gap:8px; }
-.footer-marca img { height:22px; }
-.footer-marca-text { font-family:'Oswald',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--black); }
-.footer-social { display:flex; gap:20px; align-items:center; }
-.social-link { display:flex; align-items:center; gap:7px; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--silver-dark); text-decoration:none; transition:color 0.2s; }
-.social-link:hover { color:var(--black); }
-@media (max-width:768px) { footer { padding:28px 24px; flex-direction:column; align-items:center; text-align:center; } }
-.nav-barra-abajo { display:none; position:fixed; bottom:0; left:0; right:0; z-index:400; height:64px; background:var(--white); border-top:1px solid rgba(0,0,0,0.08); box-shadow:0 -4px 20px rgba(0,0,0,0.06); }
-.nb-inner { display:flex; width:100%; height:100%; }
-.nb-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; text-decoration:none; color:var(--silver-dark); transition:color 0.2s; padding:8px 4px; border-top:2px solid transparent; }
-.nb-btn.active { color:var(--black); border-top-color:var(--black); }
-.nb-btn svg { width:20px; height:20px; }
-.nb-label { font-family:'IBM Plex Mono',monospace; font-size:9px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; }
-@media (max-width:768px) { .nav-barra-abajo { display:flex; } body { padding-bottom:64px; } }
+  :root {
+    --white:       #ffffff;
+    --off-white:   #f5f5f2;
+    --silver:      #C0C0C0;
+    --silver-dark: #8a8a8a;
+    --black:       #111111;
+    --black-soft:  #333333;
+    --gold:        #FFD700;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--off-white);
+    color: var(--black);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 300;
+    display: flex;
+    align-items: stretch;
+    height: 60px;
+    background: var(--white);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 24px;
+    text-decoration: none;
+    border-right: 1px solid rgba(0,0,0,0.08);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .nav-brand img { height: 28px; width: auto; object-fit: contain; }
+  .nav-brand-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+  .nav-tabs {
+    display: flex;
+    flex: 1;
+    overflow-x: auto;
+    align-items: center;
+    padding: 0 24px;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 100%;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .nav-tab:hover { color: var(--black); }
+  .nav-tab.active { color: var(--black); border-bottom-color: var(--black); }
+  .nav-social {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 20px;
+    border-left: 1px solid rgba(0,0,0,0.08);
+    flex-shrink: 0;
+  }
+  .nav-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    color: var(--silver-dark);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-social-link:hover { color: var(--black); }
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 20px;
+    cursor: pointer;
+    margin-left: auto;
+  }
+  .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--black); }
+  .nav-mobile-menu {
+    position: fixed;
+    top: 60px; left: 0; right: 0;
+    background: var(--white);
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    z-index: 299;
+    flex-direction: column;
+    display: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .nav-mobile-item {
+    padding: 16px 24px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    text-decoration: none;
+    display: block;
+  }
+  .nav-mobile-item:hover { color: var(--black); background: var(--off-white); }
+  .nav-mobile-item.active { color: var(--black); font-weight: 700; }
+  @media (max-width: 768px) {
+    .nav-tabs { display: none; }
+    .nav-hamburger { display: flex; }
+    .nav-social { display: none; }
+    .nav-mobile-menu.open { display: flex !important; }
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--black);
+    padding: 100px 52px 48px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .hero-inner { max-width: 900px; margin: 0 auto; }
+  .hero-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: block;
+  }
+  .hero-titulo {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(36px, 6vw, 68px);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+  .hero-subtitulo {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--silver);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  /* ── SELECTOR DE MES ── */
+  .mes-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .mes-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+  }
+  .mes-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    background: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mes-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+  .mes-btn.active {
+    color: var(--black);
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
+  /* ── VISTAS TABS ── */
+  .vistas-wrap {
+    background: var(--white);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    position: sticky;
+    top: 60px;
+    z-index: 100;
+  }
+  .vistas-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    padding: 0 52px;
+  }
+  .vista-tab {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    padding: 16px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .vista-tab:hover { color: var(--black); }
+  .vista-tab.active { color: var(--black); border-bottom-color: var(--black); }
+  @media (max-width: 768px) {
+    .vistas-inner { padding: 0 16px; overflow-x: auto; scrollbar-width: none; }
+    .vistas-inner::-webkit-scrollbar { display: none; }
+  }
+
+  /* ── CONTENIDO PRINCIPAL ── */
+  .contenido {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 52px 80px;
+  }
+  @media (max-width: 768px) {
+    .hero { padding: 88px 24px 40px; }
+    .contenido { padding: 32px 24px 60px; }
+  }
+
+  /* ── VISTA PANEL ── */
+  .vista-panel { display: none; }
+  .vista-panel.active { display: block; }
+
+  /* ── DATOS CLAVE ── */
+  .datos-clave {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .dato-clave {
+    flex: 1;
+    min-width: 120px;
+    background: var(--white);
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .dato-clave-valor {
+    font-family: 'Oswald', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1;
+  }
+  .dato-clave-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+  }
+  .dato-clave.destacado .dato-clave-valor { color: var(--black); }
+  .dato-clave.aparte {
+    background: rgba(0,0,0,0.03);
+    border-left: 3px solid rgba(0,0,0,0.15);
+  }
+  .dato-clave.aparte .dato-clave-valor { color: var(--silver-dark); }
+
+  /* ── NOTA VISTA ── */
+  .vista-nota {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--silver-dark);
+    letter-spacing: 0.06em;
+    margin-bottom: 28px;
+    padding: 10px 14px;
+    border-left: 3px solid var(--gold);
+    background: var(--white);
+  }
+
+  /* ── BARRAS ── */
+  .barras-titulo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    margin-bottom: 16px;
+  }
+  .barra-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .barra-siglas {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--black);
+    width: 100px;
+    flex-shrink: 0;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .barra-wrap {
+    flex: 1;
+    background: rgba(0,0,0,0.06);
+    height: 26px;
+    display: flex;
+    align-items: center;
+    overflow: visible;
+    position: relative;
+  }
+  .barra-fill {
+    height: 100%;
+    min-width: 2px;
+    flex-shrink: 0;
+    transition: width 0.6s ease;
+  }
+  .barra-pct {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--black);
+    white-space: nowrap;
+    padding-left: 8px;
+    flex-shrink: 0;
+  }
+  @media (max-width: 600px) {
+    .barra-siglas { width: 72px; font-size: 11px; }
+    .barra-pct { font-size: 10px; }
+  }
+
+  /* ── BLOQUES ── */
+  .bloques-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 600px) {
+    .bloques-grid { grid-template-columns: 1fr; }
+  }
+  .bloque-card {
+    background: var(--white);
+    padding: 28px 24px;
+  }
+  .bloque-card.dark { background: var(--black); }
+  .bloque-pct {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(48px, 8vw, 72px);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .bloque-card.dark .bloque-pct { color: var(--white); }
+  .bloque-card:not(.dark) .bloque-pct { color: var(--black); }
+  .bloque-nombre {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .bloque-card.dark .bloque-nombre { color: var(--silver); }
+  .bloque-card:not(.dark) .bloque-nombre { color: var(--black-soft); }
+  .bloque-desc {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--silver-dark);
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+  }
+  .bloque-card.dark .bloque-desc { color: var(--silver-dark); }
+  .bloque-barra {
+    height: 4px;
+    margin-top: 20px;
+    transition: width 0.6s ease;
+  }
+
+  /* ── HISTÓRICO ── */
+
+
+  /* ── SECCIÓN APARTE CIS ── */
+  .seccion-aparte {
+    margin-top: 40px;
+    padding: 24px 28px;
+    background: rgba(0,0,0,0.03);
+    border-left: 3px solid rgba(0,0,0,0.1);
+  }
+  .seccion-aparte-titulo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    margin-bottom: 16px;
+  }
+  .aparte-grid {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .aparte-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .aparte-valor {
+    font-family: 'Oswald', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--silver-dark);
+  }
+  .aparte-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+  }
+
+  /* ── NOTA FINAL ── */
+  .nota-final {
+    font-size: 12px;
+    color: var(--silver-dark);
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0,0,0,0.07);
+    line-height: 1.7;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--off-white);
+    border-top: 1px solid rgba(0,0,0,0.07);
+    padding: 32px 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-marca { display: flex; align-items: center; gap: 8px; }
+  .footer-marca img { height: 22px; }
+  .footer-marca-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+  .footer-social { display: flex; gap: 20px; align-items: center; }
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .social-link:hover { color: var(--black); }
+  @media (max-width: 768px) {
+    footer { padding: 28px 24px; flex-direction: column; align-items: center; text-align: center; }
+  }
+
+  /* ── BARRA NAV MÓVIL FIJA ABAJO ── */
+  .nav-barra-abajo {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 400;
+    height: 64px;
+    background: var(--white);
+    border-top: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+  }
+  .nb-inner {
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
+  .nb-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    text-decoration: none;
+    color: var(--silver-dark);
+    transition: color 0.2s;
+    padding: 8px 4px;
+    border-top: 2px solid transparent;
+  }
+  .nb-btn.active {
+    color: var(--black);
+    border-top-color: var(--black);
+  }
+  .nb-btn svg { width: 20px; height: 20px; }
+  .nb-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  @media (max-width: 768px) {
+    .nav-barra-abajo { display: flex; }
+    body { padding-bottom: 64px; }
+  }
+
 </style>
+<link rel="sitemap" type="application/xml" href="/web/sitemap.xml">
 </head>
 <body>
+
+<!-- NAV -->
 <nav>
   <a href="index.html" class="nav-brand">
     <img src="imagenes/logo_neutralito.png" alt="Neutralito">
@@ -115,12 +577,19 @@ footer { background:var(--off-white); border-top:1px solid rgba(0,0,0,0.07); pad
     <a href="conceptos.html" class="nav-tab">Conceptos</a>
     <a href="actualidad.html" class="nav-tab">Actualidad</a>
   </div>
-  <div class="nav-hamburger" onclick="toggleMenu()" id="hamburger"><span></span><span></span><span></span></div>
+  <div class="nav-hamburger" onclick="toggleMenu()" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
   <div class="nav-social">
-    <a href="https://t.me/neutralito" target="_blank" class="nav-social-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 14.36l-2.945-.918c-.64-.203-.658-.64.135-.953l11.57-4.461c.537-.194 1.006.131.964.193z"/></svg></a>
-    <a href="https://x.com/Neutralito_e" target="_blank" class="nav-social-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+    <a href="https://t.me/neutralito" target="_blank" class="nav-social-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 14.36l-2.945-.918c-.64-.203-.658-.64.135-.953l11.57-4.461c.537-.194 1.006.131.964.193z"/></svg>
+    </a>
+    <a href="https://x.com/Neutralito_e" target="_blank" class="nav-social-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
   </div>
 </nav>
+
 <div class="nav-mobile-menu" id="mobileMenu">
   <a href="index.html" class="nav-mobile-item">Inicio</a>
   <a href="datos.html" class="nav-mobile-item active">Datos</a>
@@ -128,24 +597,31 @@ footer { background:var(--off-white); border-top:1px solid rgba(0,0,0,0.07); pad
   <a href="conceptos.html" class="nav-mobile-item">Conceptos</a>
   <a href="actualidad.html" class="nav-mobile-item">Actualidad</a>
 </div>
+
+<!-- HERO -->
 <div class="hero">
   <div class="hero-inner">
     <span class="hero-label">Barómetro CIS · Intención de voto</span>
     <h1 class="hero-titulo">El CIS<br>sin maquillaje</h1>
     <p class="hero-subtitulo">Los mismos datos que publica el CIS, pero con el censo completo. Aquí los indecisos y la abstención no desaparecen del gráfico.</p>
-    <div class="mes-selector" id="mes-selector"><span class="mes-label">Cargando...</span></div>
+    <div class="mes-selector" id="mes-selector"></div>
   </div>
 </div>
+
+<!-- VISTAS TABS -->
 <div class="vistas-wrap">
   <div class="vistas-inner">
-    <div class="vista-tab active" onclick="cambiarVista('cis',event)">Como lo publica el CIS</div>
-    <div class="vista-tab" onclick="cambiarVista('neutralito',event)">El CIS de Neutralito</div>
-    <div class="vista-tab" onclick="cambiarVista('bloques',event)">Por bloques</div>
+    <div class="vista-tab active" onclick="cambiarVista('cis', event)">Como lo publica el CIS</div>
+    <div class="vista-tab" onclick="cambiarVista('neutralito', event)">El CIS de Neutralito</div>
+    <div class="vista-tab" onclick="cambiarVista('bloques', event)">Por bloques</div>
   </div>
 </div>
+
+<!-- CONTENIDO -->
 <div class="contenido">
-  <div class="cargando" id="cargando-inicial">Cargando datos...</div>
-  <div class="vista-panel" id="vista-cis">
+
+  <!-- ── VISTA CIS ── -->
+  <div class="vista-panel active" id="vista-cis">
     <div class="vista-nota">% calculado sobre votos válidos — el denominador que usan el CIS y los medios. Abstención, indecisos y nulo aparecen aparte, fuera del 100%.</div>
     <div class="datos-clave" id="cis-datos-clave"></div>
     <p class="barras-titulo">Estimación de voto — % sobre votos válidos</p>
@@ -156,6 +632,8 @@ footer { background:var(--off-white); border-top:1px solid rgba(0,0,0,0.07); pad
     </div>
     <p class="nota-final" id="cis-nota"></p>
   </div>
+
+  <!-- ── VISTA NEUTRALITO ── -->
   <div class="vista-panel" id="vista-neutralito">
     <div class="vista-nota">El censo completo. % calculado sobre la muestra total — todo el mundo cuenta: los que votan, los que dudan y los que no van a votar.</div>
     <div class="datos-clave" id="neu-datos-clave"></div>
@@ -163,165 +641,333 @@ footer { background:var(--off-white); border-top:1px solid rgba(0,0,0,0.07); pad
     <div id="neu-barras"></div>
     <p class="nota-final" id="neu-nota"></p>
   </div>
+
+  <!-- ── VISTA BLOQUES ── -->
   <div class="vista-panel" id="vista-bloques">
     <div class="vista-nota">La foto macro. Cuánta gente está decidida, cuánta duda, cuánta se abstiene y cuánta va a desperdiciar su voto.</div>
     <div class="bloques-grid" id="bloques-grid"></div>
     <p class="nota-final" id="bloques-nota"></p>
   </div>
+
+
 </div>
+
+<!-- FOOTER -->
 <footer>
   <div class="footer-marca">
     <img src="imagenes/logo_neutralito.png" alt="Neutralito">
     <span class="footer-marca-text">Neutralito</span>
   </div>
   <div class="footer-social">
-    <a href="https://t.me/neutralito" target="_blank" class="social-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 14.36l-2.945-.918c-.64-.203-.658-.64.135-.953l11.57-4.461c.537-.194 1.006.131.964.193z"/></svg>Telegram</a>
-    <a href="https://x.com/Neutralito_e" target="_blank" class="social-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>X</a>
+    <a href="https://t.me/neutralito" target="_blank" class="social-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 14.36l-2.945-.918c-.64-.203-.658-.64.135-.953l11.57-4.461c.537-.194 1.006.131.964.193z"/></svg>
+      Telegram
+    </a>
+    <a href="https://x.com/Neutralito_e" target="_blank" class="social-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      X
+    </a>
   </div>
-  <div style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:300;color:var(--silver-dark);"><strong style="color:var(--black)">© Neutralito 2026</strong></div>
+  <div style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:300;color:var(--silver-dark);">
+    <strong style="color:var(--black)">© Neutralito 2026</strong>
+  </div>
 </footer>
-<div class="nav-barra-abajo">
-  <div class="nb-inner">
-    <a href="datos.html" class="nb-btn active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span class="nb-label">Datos</span></a>
-    <a href="elecciones.html" class="nb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg><span class="nb-label">Elecciones</span></a>
-    <a href="conceptos.html" class="nb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span class="nb-label">Conceptos</span></a>
-    <a href="actualidad.html" class="nb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span class="nb-label">Actualidad</span></a>
-  </div>
-</div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+<script>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDsA-PS8VATZ-AylANWacg_c6U_Py4xdFY",
-  authDomain: "neutralito-80853.firebaseapp.com",
-  projectId: "neutralito-80853",
-  storageBucket: "neutralito-80853.firebasestorage.app",
-  messagingSenderId: "898660780536",
-  appId: "1:898660780536:web:8c7025efdabde4ffa4ee0d"
+// ══════════════════════════════════════════════
+// DATOS — añade un objeto por cada barómetro nuevo
+// ══════════════════════════════════════════════
+const barometros = [
+  {
+    mes: "Enero 2026",
+    fecha: "2026-01",
+    muestra: 4006,
+    partidos: [
+      { siglas: "PSOE",               color: "#E3000F", votos: 883 },
+      { siglas: "PP",                 color: "#0056A2", votos: 696 },
+      { siglas: "VOX",                color: "#63BE21", votos: 445 },
+      { siglas: "Sumar",              color: "#DD0073", votos: 254 },
+      { siglas: "Podemos",            color: "#6A0DAD", votos: 108 },
+      { siglas: "ERC",                color: "#F5A623", votos:  77 },
+      { siglas: "EH Bildu",           color: "#006400", votos:  52 },
+      { siglas: "Se Acabó la Fiesta", color: "#1A1A1A", votos:  42 },
+      { siglas: "Junts",              color: "#003DA5", votos:  40 },
+      { siglas: "BNG",                color: "#5B8B2A", votos:  33 },
+      { siglas: "EAJ-PNV",            color: "#007A3D", votos:  27 },
+      { siglas: "PACMA",              color: "#FF6900", votos:  25 },
+      { siglas: "Otros",              color: "#8a8a8a", votos: 148 },
+    ],
+    blanco:     145,
+    nulo:        70,
+    indecisos:  727,
+    abstencion: 234,
+  },
+  {
+    mes: "Febrero 2026",
+    fecha: "2026-02",
+    muestra: 4027,
+    partidos: [
+      { siglas: "PSOE",               color: "#E3000F", votos: 887 },
+      { siglas: "PP",                 color: "#0056A2", votos: 734 },
+      { siglas: "VOX",                color: "#63BE21", votos: 460 },
+      { siglas: "Sumar",              color: "#DD0073", votos: 247 },
+      { siglas: "Podemos",            color: "#6A0DAD", votos: 115 },
+      { siglas: "ERC",                color: "#F5A623", votos:  66 },
+      { siglas: "Se Acabó la Fiesta", color: "#1A1A1A", votos:  62 },
+      { siglas: "EH Bildu",           color: "#006400", votos:  45 },
+      { siglas: "Junts",              color: "#003DA5", votos:  35 },
+      { siglas: "BNG",                color: "#5B8B2A", votos:  31 },
+      { siglas: "EAJ-PNV",            color: "#007A3D", votos:  24 },
+      { siglas: "PACMA",              color: "#FF6900", votos:  22 },
+      { siglas: "Otros",              color: "#8a8a8a", votos: 150 },
+    ],
+    blanco:     176,
+    nulo:        73,
+    indecisos:  664,
+    abstencion: 236,
+  }
+];
+
+// Colores bloques
+const COLORES_BLOQUES = {
+  partidos:    '#111111',
+  indecisos:   '#8a8a8a',
+  abstencion:  '#C0C0C0',
+  desperdiciados: '#2F3A4A',
 };
 
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+// ══════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════
+let mesActual = 0;
+let vistaActual = 'cis';
 
-try {
-  const snap = await getDocs(query(collection(db, 'barometros'), orderBy('fecha', 'asc')));
-  const barometros = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+// ══════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════
+const fmt   = n => n.toLocaleString('es-ES');
+const pct   = (v, base) => base > 0 ? (v / base * 100).toFixed(1) + '%' : '—';
+const pctN  = (v, base) => base > 0 ? (v / base * 100) : 0;
 
-  document.getElementById('cargando-inicial').style.display = 'none';
+function calcularDatos(b) {
+  const n = b.muestra;
+  const totalPartidos = b.partidos.reduce((s, p) => s + p.votos, 0);
+  const desperdiciados = b.blanco + b.nulo;
 
-  if (barometros.length === 0) {
-    document.getElementById('cargando-inicial').style.display = 'block';
-    document.getElementById('cargando-inicial').textContent = 'No hay datos publicados aún.';
-  } else {
-    window._barometros  = barometros;
-    window._mesActual   = barometros.length - 1;
-    window._vistaActual = 'cis';
-    renderMeses();
-    document.getElementById('vista-cis').classList.add('active');
-    renderVista();
-  }
-} catch(e) {
-  document.getElementById('cargando-inicial').textContent = 'Error al cargar datos.';
-  console.error(e);
+  // Vista CIS: denominador = partidos + blanco (sin nulo)
+  const nCis = totalPartidos + b.blanco;
+
+  return { n, totalPartidos, desperdiciados, nCis };
 }
 
+// ══════════════════════════════════════════════
+// RENDER SELECTOR DE MES
+// ══════════════════════════════════════════════
 function renderMeses() {
   const wrap = document.getElementById('mes-selector');
   wrap.innerHTML = '<span class="mes-label">Mes:</span>' +
-    window._barometros.map((b,i) =>
-      `<button class="mes-btn ${i===window._mesActual?'active':''}" onclick="seleccionarMes(${i})">${b.mes}</button>`
+    barometros.map((b, i) =>
+      `<button class="mes-btn ${i === mesActual ? 'active' : ''}" onclick="seleccionarMes(${i})">${b.mes}</button>`
     ).join('');
 }
-window._renderMeses = renderMeses;
-</script>
-
-<script>
-const fmt  = n => (n||0).toLocaleString('es-ES');
-const pct  = (v,b) => b>0 ? (v/b*100).toFixed(1)+'%' : '—';
-const pctN = (v,b) => b>0 ? (v/b*100) : 0;
 
 function seleccionarMes(i) {
-  window._mesActual = i;
-  if (window._renderMeses) window._renderMeses();
+  mesActual = i;
+  renderMeses();
   renderVista();
 }
 
-function cambiarVista(vista, e) {
-  window._vistaActual = vista;
-  document.querySelectorAll('.vista-tab').forEach(t => t.classList.remove('active'));
-  if (e && e.target) e.target.classList.add('active');
-  document.querySelectorAll('.vista-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('vista-'+vista).classList.add('active');
-  renderVista();
-}
-
+// ══════════════════════════════════════════════
+// RENDER VISTAS
+// ══════════════════════════════════════════════
 function renderVista() {
-  if (!window._barometros) return;
-  const b = window._barometros[window._mesActual];
-  const n = b.muestra;
-  const totalPartidos = (b.partidos||[]).reduce((s,p) => s+p.votos, 0);
-  const desperdiciados = (b.blanco||0)+(b.nulo||0);
-  const nCis = totalPartidos+(b.blanco||0);
-  const vista = window._vistaActual||'cis';
-  if (vista==='cis')        renderCIS(b,n,nCis,desperdiciados);
-  if (vista==='neutralito') renderNeutralito(b,n,totalPartidos);
-  if (vista==='bloques')    renderBloques(b,n,totalPartidos,desperdiciados);
+  const b = barometros[mesActual];
+  const { n, totalPartidos, desperdiciados, nCis } = calcularDatos(b);
+
+  if (vistaActual === 'cis')        renderCIS(b, n, nCis, desperdiciados);
+  if (vistaActual === 'neutralito') renderNeutralito(b, n, totalPartidos, desperdiciados);
+  if (vistaActual === 'bloques')    renderBloques(b, n, totalPartidos, desperdiciados);
 }
 
-function renderCIS(b,n,nCis) {
+// ── Vista CIS ──
+function renderCIS(b, n, nCis, desperdiciados) {
+  // Datos clave
   document.getElementById('cis-datos-clave').innerHTML = `
     <div class="dato-clave"><span class="dato-clave-valor">${fmt(nCis)}</span><span class="dato-clave-label">Votos válidos (denominador)</span></div>
     <div class="dato-clave"><span class="dato-clave-valor">${fmt(n)}</span><span class="dato-clave-label">Muestra total</span></div>
-    <div class="dato-clave"><span class="dato-clave-valor">${pct(nCis,n)}</span><span class="dato-clave-label">% del total que cuenta</span></div>`;
-  const items = [...(b.partidos||[]),{siglas:'En blanco',color:'#cccccc',votos:b.blanco||0}].sort((a,b)=>b.votos-a.votos);
-  const max = Math.max(...items.map(p=>pctN(p.votos,nCis)));
+    <div class="dato-clave"><span class="dato-clave-valor">${pct(nCis, n)}</span><span class="dato-clave-label">% del total que cuenta</span></div>
+  `;
+
+  // Barras — partidos + blanco sobre nCis
+  const items = [
+    ...b.partidos.map(p => ({ siglas: p.siglas, color: p.color, votos: p.votos })),
+    { siglas: 'En blanco', color: '#cccccc', votos: b.blanco },
+  ].sort((a, b) => b.votos - a.votos);
+
+  const max = Math.max(...items.map(p => pctN(p.votos, nCis)));
   document.getElementById('cis-barras').innerHTML = items.map(p => {
-    const v=pctN(p.votos,nCis); const w=max>0?(v/max*100):0;
-    return `<div class="barra-row"><span class="barra-siglas">${p.siglas}</span><div class="barra-wrap"><div class="barra-fill" style="width:${w}%;background:${p.color}"></div><span class="barra-pct">${v.toFixed(1)}%</span></div></div>`;
+    const v = pctN(p.votos, nCis);
+    const w = max > 0 ? (v / max * 100) : 0;
+    return `<div class="barra-row">
+      <span class="barra-siglas">${p.siglas}</span>
+      <div class="barra-wrap">
+        <div class="barra-fill" style="width:${w}%;background:${p.color}"></div>
+        <span class="barra-pct">${v.toFixed(1)}%</span>
+      </div>
+    </div>`;
   }).join('');
+
+  // Aparte
   document.getElementById('cis-aparte').innerHTML = `
-    <div class="aparte-item"><span class="aparte-valor">${pct(b.abstencion||0,n)}</span><span class="aparte-label">Abstención</span></div>
-    <div class="aparte-item"><span class="aparte-valor">${pct(b.indecisos||0,n)}</span><span class="aparte-label">Indecisos</span></div>
-    <div class="aparte-item"><span class="aparte-valor">${pct(b.nulo||0,n)}</span><span class="aparte-label">Voto nulo</span></div>`;
-  document.getElementById('cis-nota').textContent = `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Denominador CIS: votos válidos (${fmt(nCis)}) = partidos + voto en blanco.`;
+    <div class="aparte-item"><span class="aparte-valor">${pct(b.abstencion, n)}</span><span class="aparte-label">Abstención</span></div>
+    <div class="aparte-item"><span class="aparte-valor">${pct(b.indecisos, n)}</span><span class="aparte-label">Indecisos</span></div>
+    <div class="aparte-item"><span class="aparte-valor">${pct(b.nulo, n)}</span><span class="aparte-label">Voto nulo</span></div>
+  `;
+
+  document.getElementById('cis-nota').textContent =
+    `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Denominador CIS: votos válidos (${fmt(nCis)}) = partidos + voto en blanco.`;
 }
 
-function renderNeutralito(b,n,totalPartidos) {
+// ── Vista Neutralito ──
+function renderNeutralito(b, n, totalPartidos, desperdiciados) {
   document.getElementById('neu-datos-clave').innerHTML = `
     <div class="dato-clave"><span class="dato-clave-valor">${fmt(n)}</span><span class="dato-clave-label">Muestra total (denominador)</span></div>
-    <div class="dato-clave"><span class="dato-clave-valor">${pct(totalPartidos,n)}</span><span class="dato-clave-label">Decide por un partido</span></div>
-    <div class="dato-clave"><span class="dato-clave-valor">${pct(b.indecisos||0,n)}</span><span class="dato-clave-label">Indecisos</span></div>
-    <div class="dato-clave aparte"><span class="dato-clave-valor">${pct(b.abstencion||0,n)}</span><span class="dato-clave-label">Abstención</span></div>`;
-  const todos = [...(b.partidos||[]),{siglas:'En blanco',color:'#cccccc',votos:b.blanco||0},{siglas:'Nulo',color:'#e0e0e0',votos:b.nulo||0},{siglas:'Indecisos',color:'#8a8a8a',votos:b.indecisos||0},{siglas:'Abstención',color:'#C0C0C0',votos:b.abstencion||0}].sort((a,b)=>b.votos-a.votos);
-  const max=Math.max(...todos.map(p=>pctN(p.votos,n)));
-  document.getElementById('neu-barras').innerHTML = todos.map(p=>{
-    const v=pctN(p.votos,n); const w=max>0?(v/max*100):0;
-    return `<div class="barra-row"><span class="barra-siglas">${p.siglas}</span><div class="barra-wrap"><div class="barra-fill" style="width:${w}%;background:${p.color}"></div><span class="barra-pct">${v.toFixed(1)}%</span></div></div>`;
+    <div class="dato-clave"><span class="dato-clave-valor">${pct(totalPartidos, n)}</span><span class="dato-clave-label">Decide por un partido</span></div>
+    <div class="dato-clave"><span class="dato-clave-valor">${pct(b.indecisos, n)}</span><span class="dato-clave-label">Indecisos</span></div>
+    <div class="dato-clave aparte"><span class="dato-clave-valor">${pct(b.abstencion, n)}</span><span class="dato-clave-label">Abstención</span></div>
+  `;
+
+  const todos = [
+    ...b.partidos.map(p => ({ siglas: p.siglas, color: p.color, votos: p.votos })),
+    { siglas: 'En blanco', color: '#cccccc', votos: b.blanco },
+    { siglas: 'Nulo',      color: '#e0e0e0', votos: b.nulo },
+    { siglas: 'Indecisos', color: '#8a8a8a', votos: b.indecisos },
+    { siglas: 'Abstención',color: '#C0C0C0', votos: b.abstencion },
+  ].sort((a, b) => b.votos - a.votos);
+
+  const max = Math.max(...todos.map(p => pctN(p.votos, n)));
+  document.getElementById('neu-barras').innerHTML = todos.map(p => {
+    const v = pctN(p.votos, n);
+    const w = max > 0 ? (v / max * 100) : 0;
+    return `<div class="barra-row">
+      <span class="barra-siglas">${p.siglas}</span>
+      <div class="barra-wrap">
+        <div class="barra-fill" style="width:${w}%;background:${p.color}"></div>
+        <span class="barra-pct">${v.toFixed(1)}%</span>
+      </div>
+    </div>`;
   }).join('');
-  document.getElementById('neu-nota').textContent = `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Todos los porcentajes calculados sobre la muestra total.`;
+
+  document.getElementById('neu-nota').textContent =
+    `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Todos los porcentajes calculados sobre la muestra total.`;
 }
 
-function renderBloques(b,n,totalPartidos,desperdiciados) {
+// ── Vista Bloques ──
+function renderBloques(b, n, totalPartidos, desperdiciados) {
   const bloques = [
-    {nombre:'Partidos',votos:totalPartidos,dark:true,desc:'Tienen intención de voto por algún partido'},
-    {nombre:'Indecisos',votos:b.indecisos||0,dark:false,desc:'No saben todavía o no contestan'},
-    {nombre:'Abstención',votos:b.abstencion||0,dark:false,desc:'No tienen intención de votar'},
-    {nombre:'Blanco + Nulo',votos:desperdiciados,dark:true,desc:'Votan pero no por ningún partido'},
-  ].sort((a,b)=>b.votos-a.votos);
-  document.getElementById('bloques-grid').innerHTML = bloques.map(bl=>{
-    const v=pctN(bl.votos,n);
-    return `<div class="bloque-card ${bl.dark?'dark':''}"><div class="bloque-pct">${v.toFixed(1)}%</div><div class="bloque-nombre">${bl.nombre}</div><div class="bloque-desc">${bl.desc}<br>${fmt(bl.votos)} de ${fmt(n)} encuestados</div><div class="bloque-barra" style="width:${v}%;background:${bl.dark?'#FFD700':'#C0C0C0'}"></div></div>`;
+    {
+      nombre: 'Partidos',
+      votos: totalPartidos,
+      color: COLORES_BLOQUES.partidos,
+      dark: true,
+      desc: 'Tienen intención de voto por algún partido'
+    },
+    {
+      nombre: 'Indecisos',
+      votos: b.indecisos,
+      color: COLORES_BLOQUES.indecisos,
+      dark: false,
+      desc: 'No saben todavía o no contestan'
+    },
+    {
+      nombre: 'Abstención',
+      votos: b.abstencion,
+      color: COLORES_BLOQUES.abstencion,
+      dark: false,
+      desc: 'No tienen intención de votar'
+    },
+    {
+      nombre: 'Blanco + Nulo',
+      votos: desperdiciados,
+      color: COLORES_BLOQUES.desperdiciados,
+      dark: true,
+      desc: 'Votan pero no por ningún partido'
+    },
+  ].sort((a, b) => b.votos - a.votos);
+
+  document.getElementById('bloques-grid').innerHTML = bloques.map(bl => {
+    const v = pctN(bl.votos, n);
+    return `<div class="bloque-card ${bl.dark ? 'dark' : ''}">
+      <div class="bloque-pct">${v.toFixed(1)}%</div>
+      <div class="bloque-nombre">${bl.nombre}</div>
+      <div class="bloque-desc">${bl.desc}<br>${fmt(bl.votos)} de ${fmt(n)} encuestados</div>
+      <div class="bloque-barra" style="width:${v}%;background:${bl.dark ? '#FFD700' : '#C0C0C0'}"></div>
+    </div>`;
   }).join('');
-  document.getElementById('bloques-nota').textContent = `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Los cuatro bloques suman el 100% de la muestra.`;
+
+  document.getElementById('bloques-nota').textContent =
+    `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Los cuatro bloques suman el 100% de la muestra.`;
 }
 
-function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
-document.addEventListener('click',function(e){
-  const menu=document.getElementById('mobileMenu'); const h=document.getElementById('hamburger');
-  if(menu&&h&&!menu.contains(e.target)&&!h.contains(e.target)) menu.classList.remove('open');
+
+// ══════════════════════════════════════════════
+// CAMBIO DE VISTA
+// ══════════════════════════════════════════════
+function cambiarVista(vista, e) {
+  vistaActual = vista;
+  document.querySelectorAll('.vista-tab').forEach(t => t.classList.remove('active'));
+  if (e && e.target) e.target.classList.add('active');
+  document.querySelectorAll('.vista-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('vista-' + vista).classList.add('active');
+  renderVista();
+}
+
+// ══════════════════════════════════════════════
+// MENÚ MÓVIL
+// ══════════════════════════════════════════════
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('mobileMenu');
+  const hamburger = document.getElementById('hamburger');
+  if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  // Abrir último mes por defecto
+  mesActual = barometros.length - 1;
+  renderMeses();
+  renderVista();
 });
 </script>
+<!-- BARRA NAV MÓVIL FIJA ABAJO -->
+<div class="nav-barra-abajo">
+  <div class="nb-inner">
+    <a href="datos.html" class="nb-btn active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <span class="nb-label">Datos</span>
+    </a>
+    <a href="elecciones.html" class="nb-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      <span class="nb-label">Elecciones</span>
+    </a>
+    <a href="conceptos.html" class="nb-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <span class="nb-label">Conceptos</span>
+    </a>
+    <a href="actualidad.html" class="nb-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span class="nb-label">Actualidad</span>
+    </a>
+  </div>
+</div>
+
 </body>
 </html>
