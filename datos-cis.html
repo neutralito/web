@@ -422,9 +422,6 @@
     transition: width 0.6s ease;
   }
 
-  /* ── HISTÓRICO ── */
-
-
   /* ── SECCIÓN APARTE CIS ── */
   .seccion-aparte {
     margin-top: 40px;
@@ -472,6 +469,17 @@
     padding-top: 20px;
     border-top: 1px solid rgba(0,0,0,0.07);
     line-height: 1.7;
+  }
+
+  /* ── CARGANDO ── */
+  .cargando {
+    text-align: center;
+    padding: 80px 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
   }
 
   /* ── FOOTER ── */
@@ -525,41 +533,24 @@
     border-top: 1px solid rgba(0,0,0,0.08);
     box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
   }
-  .nb-inner {
-    display: flex;
-    width: 100%;
-    height: 100%;
-  }
+  .nb-inner { display: flex; width: 100%; height: 100%; }
   .nb-btn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    text-decoration: none;
-    color: var(--silver-dark);
-    transition: color 0.2s;
-    padding: 8px 4px;
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 3px; text-decoration: none; color: var(--silver-dark);
+    transition: color 0.2s; padding: 8px 4px;
     border-top: 2px solid transparent;
   }
-  .nb-btn.active {
-    color: var(--black);
-    border-top-color: var(--black);
-  }
+  .nb-btn.active { color: var(--black); border-top-color: var(--black); }
   .nb-btn svg { width: 20px; height: 20px; }
   .nb-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+    font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
   }
   @media (max-width: 768px) {
     .nav-barra-abajo { display: flex; }
     body { padding-bottom: 64px; }
   }
-
 </style>
 <link rel="sitemap" type="application/xml" href="/web/sitemap.xml">
 </head>
@@ -604,7 +595,9 @@
     <span class="hero-label">Barómetro CIS · Intención de voto</span>
     <h1 class="hero-titulo">El CIS<br>sin maquillaje</h1>
     <p class="hero-subtitulo">Los mismos datos que publica el CIS, pero con el censo completo. Aquí los indecisos y la abstención no desaparecen del gráfico.</p>
-    <div class="mes-selector" id="mes-selector"></div>
+    <div class="mes-selector" id="mes-selector">
+      <span class="mes-label">Cargando...</span>
+    </div>
   </div>
 </div>
 
@@ -619,9 +612,10 @@
 
 <!-- CONTENIDO -->
 <div class="contenido">
+  <div class="cargando" id="cargando-inicial">Cargando datos...</div>
 
   <!-- ── VISTA CIS ── -->
-  <div class="vista-panel active" id="vista-cis">
+  <div class="vista-panel" id="vista-cis">
     <div class="vista-nota">% calculado sobre votos válidos — el denominador que usan el CIS y los medios. Abstención, indecisos y nulo aparecen aparte, fuera del 100%.</div>
     <div class="datos-clave" id="cis-datos-clave"></div>
     <p class="barras-titulo">Estimación de voto — % sobre votos válidos</p>
@@ -648,8 +642,6 @@
     <div class="bloques-grid" id="bloques-grid"></div>
     <p class="nota-final" id="bloques-nota"></p>
   </div>
-
-
 </div>
 
 <!-- FOOTER -->
@@ -673,280 +665,6 @@
   </div>
 </footer>
 
-<script>
-
-// ══════════════════════════════════════════════
-// DATOS — añade un objeto por cada barómetro nuevo
-// ══════════════════════════════════════════════
-const barometros = [
-  {
-    mes: "Enero 2026",
-    fecha: "2026-01",
-    muestra: 4006,
-    partidos: [
-      { siglas: "PSOE",               color: "#E3000F", votos: 883 },
-      { siglas: "PP",                 color: "#0056A2", votos: 696 },
-      { siglas: "VOX",                color: "#63BE21", votos: 445 },
-      { siglas: "Sumar",              color: "#DD0073", votos: 254 },
-      { siglas: "Podemos",            color: "#6A0DAD", votos: 108 },
-      { siglas: "ERC",                color: "#F5A623", votos:  77 },
-      { siglas: "EH Bildu",           color: "#006400", votos:  52 },
-      { siglas: "Se Acabó la Fiesta", color: "#1A1A1A", votos:  42 },
-      { siglas: "Junts",              color: "#003DA5", votos:  40 },
-      { siglas: "BNG",                color: "#5B8B2A", votos:  33 },
-      { siglas: "EAJ-PNV",            color: "#007A3D", votos:  27 },
-      { siglas: "PACMA",              color: "#FF6900", votos:  25 },
-      { siglas: "Otros",              color: "#8a8a8a", votos: 148 },
-    ],
-    blanco:     145,
-    nulo:        70,
-    indecisos:  727,
-    abstencion: 234,
-  },
-  {
-    mes: "Febrero 2026",
-    fecha: "2026-02",
-    muestra: 4027,
-    partidos: [
-      { siglas: "PSOE",               color: "#E3000F", votos: 887 },
-      { siglas: "PP",                 color: "#0056A2", votos: 734 },
-      { siglas: "VOX",                color: "#63BE21", votos: 460 },
-      { siglas: "Sumar",              color: "#DD0073", votos: 247 },
-      { siglas: "Podemos",            color: "#6A0DAD", votos: 115 },
-      { siglas: "ERC",                color: "#F5A623", votos:  66 },
-      { siglas: "Se Acabó la Fiesta", color: "#1A1A1A", votos:  62 },
-      { siglas: "EH Bildu",           color: "#006400", votos:  45 },
-      { siglas: "Junts",              color: "#003DA5", votos:  35 },
-      { siglas: "BNG",                color: "#5B8B2A", votos:  31 },
-      { siglas: "EAJ-PNV",            color: "#007A3D", votos:  24 },
-      { siglas: "PACMA",              color: "#FF6900", votos:  22 },
-      { siglas: "Otros",              color: "#8a8a8a", votos: 150 },
-    ],
-    blanco:     176,
-    nulo:        73,
-    indecisos:  664,
-    abstencion: 236,
-  }
-];
-
-// Colores bloques
-const COLORES_BLOQUES = {
-  partidos:    '#111111',
-  indecisos:   '#8a8a8a',
-  abstencion:  '#C0C0C0',
-  desperdiciados: '#2F3A4A',
-};
-
-// ══════════════════════════════════════════════
-// ESTADO
-// ══════════════════════════════════════════════
-let mesActual = 0;
-let vistaActual = 'cis';
-
-// ══════════════════════════════════════════════
-// UTILIDADES
-// ══════════════════════════════════════════════
-const fmt   = n => n.toLocaleString('es-ES');
-const pct   = (v, base) => base > 0 ? (v / base * 100).toFixed(1) + '%' : '—';
-const pctN  = (v, base) => base > 0 ? (v / base * 100) : 0;
-
-function calcularDatos(b) {
-  const n = b.muestra;
-  const totalPartidos = b.partidos.reduce((s, p) => s + p.votos, 0);
-  const desperdiciados = b.blanco + b.nulo;
-
-  // Vista CIS: denominador = partidos + blanco (sin nulo)
-  const nCis = totalPartidos + b.blanco;
-
-  return { n, totalPartidos, desperdiciados, nCis };
-}
-
-// ══════════════════════════════════════════════
-// RENDER SELECTOR DE MES
-// ══════════════════════════════════════════════
-function renderMeses() {
-  const wrap = document.getElementById('mes-selector');
-  wrap.innerHTML = '<span class="mes-label">Mes:</span>' +
-    barometros.map((b, i) =>
-      `<button class="mes-btn ${i === mesActual ? 'active' : ''}" onclick="seleccionarMes(${i})">${b.mes}</button>`
-    ).join('');
-}
-
-function seleccionarMes(i) {
-  mesActual = i;
-  renderMeses();
-  renderVista();
-}
-
-// ══════════════════════════════════════════════
-// RENDER VISTAS
-// ══════════════════════════════════════════════
-function renderVista() {
-  const b = barometros[mesActual];
-  const { n, totalPartidos, desperdiciados, nCis } = calcularDatos(b);
-
-  if (vistaActual === 'cis')        renderCIS(b, n, nCis, desperdiciados);
-  if (vistaActual === 'neutralito') renderNeutralito(b, n, totalPartidos, desperdiciados);
-  if (vistaActual === 'bloques')    renderBloques(b, n, totalPartidos, desperdiciados);
-}
-
-// ── Vista CIS ──
-function renderCIS(b, n, nCis, desperdiciados) {
-  // Datos clave
-  document.getElementById('cis-datos-clave').innerHTML = `
-    <div class="dato-clave"><span class="dato-clave-valor">${fmt(nCis)}</span><span class="dato-clave-label">Votos válidos (denominador)</span></div>
-    <div class="dato-clave"><span class="dato-clave-valor">${fmt(n)}</span><span class="dato-clave-label">Muestra total</span></div>
-    <div class="dato-clave"><span class="dato-clave-valor">${pct(nCis, n)}</span><span class="dato-clave-label">% del total que cuenta</span></div>
-  `;
-
-  // Barras — partidos + blanco sobre nCis
-  const items = [
-    ...b.partidos.map(p => ({ siglas: p.siglas, color: p.color, votos: p.votos })),
-    { siglas: 'En blanco', color: '#cccccc', votos: b.blanco },
-  ].sort((a, b) => b.votos - a.votos);
-
-  const max = Math.max(...items.map(p => pctN(p.votos, nCis)));
-  document.getElementById('cis-barras').innerHTML = items.map(p => {
-    const v = pctN(p.votos, nCis);
-    const w = max > 0 ? (v / max * 100) : 0;
-    return `<div class="barra-row">
-      <span class="barra-siglas">${p.siglas}</span>
-      <div class="barra-wrap">
-        <div class="barra-fill" style="width:${w}%;background:${p.color}"></div>
-        <span class="barra-pct">${v.toFixed(1)}%</span>
-      </div>
-    </div>`;
-  }).join('');
-
-  // Aparte
-  document.getElementById('cis-aparte').innerHTML = `
-    <div class="aparte-item"><span class="aparte-valor">${pct(b.abstencion, n)}</span><span class="aparte-label">Abstención</span></div>
-    <div class="aparte-item"><span class="aparte-valor">${pct(b.indecisos, n)}</span><span class="aparte-label">Indecisos</span></div>
-    <div class="aparte-item"><span class="aparte-valor">${pct(b.nulo, n)}</span><span class="aparte-label">Voto nulo</span></div>
-  `;
-
-  document.getElementById('cis-nota').textContent =
-    `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Denominador CIS: votos válidos (${fmt(nCis)}) = partidos + voto en blanco.`;
-}
-
-// ── Vista Neutralito ──
-function renderNeutralito(b, n, totalPartidos, desperdiciados) {
-  document.getElementById('neu-datos-clave').innerHTML = `
-    <div class="dato-clave"><span class="dato-clave-valor">${fmt(n)}</span><span class="dato-clave-label">Muestra total (denominador)</span></div>
-    <div class="dato-clave"><span class="dato-clave-valor">${pct(totalPartidos, n)}</span><span class="dato-clave-label">Decide por un partido</span></div>
-    <div class="dato-clave"><span class="dato-clave-valor">${pct(b.indecisos, n)}</span><span class="dato-clave-label">Indecisos</span></div>
-    <div class="dato-clave aparte"><span class="dato-clave-valor">${pct(b.abstencion, n)}</span><span class="dato-clave-label">Abstención</span></div>
-  `;
-
-  const todos = [
-    ...b.partidos.map(p => ({ siglas: p.siglas, color: p.color, votos: p.votos })),
-    { siglas: 'En blanco', color: '#cccccc', votos: b.blanco },
-    { siglas: 'Nulo',      color: '#e0e0e0', votos: b.nulo },
-    { siglas: 'Indecisos', color: '#8a8a8a', votos: b.indecisos },
-    { siglas: 'Abstención',color: '#C0C0C0', votos: b.abstencion },
-  ].sort((a, b) => b.votos - a.votos);
-
-  const max = Math.max(...todos.map(p => pctN(p.votos, n)));
-  document.getElementById('neu-barras').innerHTML = todos.map(p => {
-    const v = pctN(p.votos, n);
-    const w = max > 0 ? (v / max * 100) : 0;
-    return `<div class="barra-row">
-      <span class="barra-siglas">${p.siglas}</span>
-      <div class="barra-wrap">
-        <div class="barra-fill" style="width:${w}%;background:${p.color}"></div>
-        <span class="barra-pct">${v.toFixed(1)}%</span>
-      </div>
-    </div>`;
-  }).join('');
-
-  document.getElementById('neu-nota').textContent =
-    `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Todos los porcentajes calculados sobre la muestra total.`;
-}
-
-// ── Vista Bloques ──
-function renderBloques(b, n, totalPartidos, desperdiciados) {
-  const bloques = [
-    {
-      nombre: 'Partidos',
-      votos: totalPartidos,
-      color: COLORES_BLOQUES.partidos,
-      dark: true,
-      desc: 'Tienen intención de voto por algún partido'
-    },
-    {
-      nombre: 'Indecisos',
-      votos: b.indecisos,
-      color: COLORES_BLOQUES.indecisos,
-      dark: false,
-      desc: 'No saben todavía o no contestan'
-    },
-    {
-      nombre: 'Abstención',
-      votos: b.abstencion,
-      color: COLORES_BLOQUES.abstencion,
-      dark: false,
-      desc: 'No tienen intención de votar'
-    },
-    {
-      nombre: 'Blanco + Nulo',
-      votos: desperdiciados,
-      color: COLORES_BLOQUES.desperdiciados,
-      dark: true,
-      desc: 'Votan pero no por ningún partido'
-    },
-  ].sort((a, b) => b.votos - a.votos);
-
-  document.getElementById('bloques-grid').innerHTML = bloques.map(bl => {
-    const v = pctN(bl.votos, n);
-    return `<div class="bloque-card ${bl.dark ? 'dark' : ''}">
-      <div class="bloque-pct">${v.toFixed(1)}%</div>
-      <div class="bloque-nombre">${bl.nombre}</div>
-      <div class="bloque-desc">${bl.desc}<br>${fmt(bl.votos)} de ${fmt(n)} encuestados</div>
-      <div class="bloque-barra" style="width:${v}%;background:${bl.dark ? '#FFD700' : '#C0C0C0'}"></div>
-    </div>`;
-  }).join('');
-
-  document.getElementById('bloques-nota').textContent =
-    `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Los cuatro bloques suman el 100% de la muestra.`;
-}
-
-
-// ══════════════════════════════════════════════
-// CAMBIO DE VISTA
-// ══════════════════════════════════════════════
-function cambiarVista(vista, e) {
-  vistaActual = vista;
-  document.querySelectorAll('.vista-tab').forEach(t => t.classList.remove('active'));
-  if (e && e.target) e.target.classList.add('active');
-  document.querySelectorAll('.vista-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('vista-' + vista).classList.add('active');
-  renderVista();
-}
-
-// ══════════════════════════════════════════════
-// MENÚ MÓVIL
-// ══════════════════════════════════════════════
-function toggleMenu() {
-  document.getElementById('mobileMenu').classList.toggle('open');
-}
-document.addEventListener('click', function(e) {
-  const menu = document.getElementById('mobileMenu');
-  const hamburger = document.getElementById('hamburger');
-  if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
-    menu.classList.remove('open');
-  }
-});
-
-// ══════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', function() {
-  // Abrir último mes por defecto
-  mesActual = barometros.length - 1;
-  renderMeses();
-  renderVista();
-});
-</script>
 <!-- BARRA NAV MÓVIL FIJA ABAJO -->
 <div class="nav-barra-abajo">
   <div class="nb-inner">
@@ -968,6 +686,201 @@ document.addEventListener('DOMContentLoaded', function() {
     </a>
   </div>
 </div>
+
+<!-- ══ FIREBASE ══ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDsA-PS8VATZ-AylANWacg_c6U_Py4xdFY",
+  authDomain: "neutralito-80853.firebaseapp.com",
+  projectId: "neutralito-80853",
+  storageBucket: "neutralito-80853.firebasestorage.app",
+  messagingSenderId: "898660780536",
+  appId: "1:898660780536:web:8c7025efdabde4ffa4ee0d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// ── Cargar barómetros de Firebase ──
+const snap = await getDocs(query(collection(db, 'barometros'), orderBy('fecha', 'asc')));
+const barometros = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+document.getElementById('cargando-inicial').style.display = 'none';
+
+if (barometros.length === 0) {
+  document.getElementById('cargando-inicial').style.display = 'block';
+  document.getElementById('cargando-inicial').textContent = 'No hay datos publicados aún.';
+  return;
+}
+
+// Exponer al scope global para que funcionen los botones
+window._barometros = barometros;
+window._mesActual  = barometros.length - 1;
+window._vistaActual = 'cis';
+
+renderMeses();
+// Activar primera vista
+document.getElementById('vista-cis').classList.add('active');
+renderVista();
+
+function renderMeses() {
+  const wrap = document.getElementById('mes-selector');
+  wrap.innerHTML = '<span class="mes-label">Mes:</span>' +
+    barometros.map((b, i) =>
+      `<button class="mes-btn ${i === window._mesActual ? 'active' : ''}" onclick="seleccionarMes(${i})">${b.mes}</button>`
+    ).join('');
+}
+window._renderMeses = renderMeses;
+
+</script>
+
+<script>
+// ══════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════
+const fmt  = n => (n||0).toLocaleString('es-ES');
+const pct  = (v, base) => base > 0 ? (v / base * 100).toFixed(1) + '%' : '—';
+const pctN = (v, base) => base > 0 ? (v / base * 100) : 0;
+
+function calcularDatos(b) {
+  const n = b.muestra;
+  const totalPartidos = (b.partidos||[]).reduce((s, p) => s + p.votos, 0);
+  const desperdiciados = (b.blanco||0) + (b.nulo||0);
+  const nCis = totalPartidos + (b.blanco||0);
+  return { n, totalPartidos, desperdiciados, nCis };
+}
+
+// ── Selector de mes ──
+function seleccionarMes(i) {
+  window._mesActual = i;
+  if (window._renderMeses) window._renderMeses();
+  renderVista();
+}
+
+// ── Cambio de vista ──
+function cambiarVista(vista, e) {
+  window._vistaActual = vista;
+  document.querySelectorAll('.vista-tab').forEach(t => t.classList.remove('active'));
+  if (e && e.target) e.target.classList.add('active');
+  document.querySelectorAll('.vista-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('vista-' + vista).classList.add('active');
+  renderVista();
+}
+
+function renderVista() {
+  if (!window._barometros) return;
+  const b = window._barometros[window._mesActual];
+  const { n, totalPartidos, desperdiciados, nCis } = calcularDatos(b);
+  const vista = window._vistaActual || 'cis';
+  if (vista === 'cis')        renderCIS(b, n, nCis, desperdiciados);
+  if (vista === 'neutralito') renderNeutralito(b, n, totalPartidos, desperdiciados);
+  if (vista === 'bloques')    renderBloques(b, n, totalPartidos, desperdiciados);
+}
+
+// ── Vista CIS ──
+function renderCIS(b, n, nCis, desperdiciados) {
+  document.getElementById('cis-datos-clave').innerHTML = `
+    <div class="dato-clave"><span class="dato-clave-valor">${fmt(nCis)}</span><span class="dato-clave-label">Votos válidos (denominador)</span></div>
+    <div class="dato-clave"><span class="dato-clave-valor">${fmt(n)}</span><span class="dato-clave-label">Muestra total</span></div>
+    <div class="dato-clave"><span class="dato-clave-valor">${pct(nCis, n)}</span><span class="dato-clave-label">% del total que cuenta</span></div>
+  `;
+  const items = [
+    ...(b.partidos||[]).map(p => ({ siglas: p.siglas, color: p.color, votos: p.votos })),
+    { siglas: 'En blanco', color: '#cccccc', votos: b.blanco||0 },
+  ].sort((a, b) => b.votos - a.votos);
+  const max = Math.max(...items.map(p => pctN(p.votos, nCis)));
+  document.getElementById('cis-barras').innerHTML = items.map(p => {
+    const v = pctN(p.votos, nCis);
+    const w = max > 0 ? (v / max * 100) : 0;
+    return `<div class="barra-row">
+      <span class="barra-siglas">${p.siglas}</span>
+      <div class="barra-wrap">
+        <div class="barra-fill" style="width:${w}%;background:${p.color}"></div>
+        <span class="barra-pct">${v.toFixed(1)}%</span>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('cis-aparte').innerHTML = `
+    <div class="aparte-item"><span class="aparte-valor">${pct(b.abstencion||0, n)}</span><span class="aparte-label">Abstención</span></div>
+    <div class="aparte-item"><span class="aparte-valor">${pct(b.indecisos||0, n)}</span><span class="aparte-label">Indecisos</span></div>
+    <div class="aparte-item"><span class="aparte-valor">${pct(b.nulo||0, n)}</span><span class="aparte-label">Voto nulo</span></div>
+  `;
+  document.getElementById('cis-nota').textContent =
+    `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Denominador CIS: votos válidos (${fmt(nCis)}) = partidos + voto en blanco.`;
+}
+
+// ── Vista Neutralito ──
+function renderNeutralito(b, n, totalPartidos, desperdiciados) {
+  document.getElementById('neu-datos-clave').innerHTML = `
+    <div class="dato-clave"><span class="dato-clave-valor">${fmt(n)}</span><span class="dato-clave-label">Muestra total (denominador)</span></div>
+    <div class="dato-clave"><span class="dato-clave-valor">${pct(totalPartidos, n)}</span><span class="dato-clave-label">Decide por un partido</span></div>
+    <div class="dato-clave"><span class="dato-clave-valor">${pct(b.indecisos||0, n)}</span><span class="dato-clave-label">Indecisos</span></div>
+    <div class="dato-clave aparte"><span class="dato-clave-valor">${pct(b.abstencion||0, n)}</span><span class="dato-clave-label">Abstención</span></div>
+  `;
+  const todos = [
+    ...(b.partidos||[]).map(p => ({ siglas: p.siglas, color: p.color, votos: p.votos })),
+    { siglas: 'En blanco', color: '#cccccc', votos: b.blanco||0 },
+    { siglas: 'Nulo',      color: '#e0e0e0', votos: b.nulo||0 },
+    { siglas: 'Indecisos', color: '#8a8a8a', votos: b.indecisos||0 },
+    { siglas: 'Abstención',color: '#C0C0C0', votos: b.abstencion||0 },
+  ].sort((a, b) => b.votos - a.votos);
+  const max = Math.max(...todos.map(p => pctN(p.votos, n)));
+  document.getElementById('neu-barras').innerHTML = todos.map(p => {
+    const v = pctN(p.votos, n);
+    const w = max > 0 ? (v / max * 100) : 0;
+    return `<div class="barra-row">
+      <span class="barra-siglas">${p.siglas}</span>
+      <div class="barra-wrap">
+        <div class="barra-fill" style="width:${w}%;background:${p.color}"></div>
+        <span class="barra-pct">${v.toFixed(1)}%</span>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('neu-nota').textContent =
+    `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Todos los porcentajes calculados sobre la muestra total.`;
+}
+
+// ── Vista Bloques ──
+function renderBloques(b, n, totalPartidos, desperdiciados) {
+  const COLORES_BLOQUES = {
+    partidos: '#111111', indecisos: '#8a8a8a',
+    abstencion: '#C0C0C0', desperdiciados: '#2F3A4A',
+  };
+  const bloques = [
+    { nombre: 'Partidos',     votos: totalPartidos,    color: COLORES_BLOQUES.partidos,      dark: true,  desc: 'Tienen intención de voto por algún partido' },
+    { nombre: 'Indecisos',    votos: b.indecisos||0,   color: COLORES_BLOQUES.indecisos,     dark: false, desc: 'No saben todavía o no contestan' },
+    { nombre: 'Abstención',   votos: b.abstencion||0,  color: COLORES_BLOQUES.abstencion,    dark: false, desc: 'No tienen intención de votar' },
+    { nombre: 'Blanco + Nulo',votos: desperdiciados,   color: COLORES_BLOQUES.desperdiciados,dark: true,  desc: 'Votan pero no por ningún partido' },
+  ].sort((a, b) => b.votos - a.votos);
+
+  document.getElementById('bloques-grid').innerHTML = bloques.map(bl => {
+    const v = pctN(bl.votos, n);
+    return `<div class="bloque-card ${bl.dark ? 'dark' : ''}">
+      <div class="bloque-pct">${v.toFixed(1)}%</div>
+      <div class="bloque-nombre">${bl.nombre}</div>
+      <div class="bloque-desc">${bl.desc}<br>${fmt(bl.votos)} de ${fmt(n)} encuestados</div>
+      <div class="bloque-barra" style="width:${v}%;background:${bl.dark ? '#FFD700' : '#C0C0C0'}"></div>
+    </div>`;
+  }).join('');
+  document.getElementById('bloques-nota').textContent =
+    `Barómetro ${b.mes} · Muestra: ${fmt(n)} encuestados · Los cuatro bloques suman el 100% de la muestra.`;
+}
+
+// ── Menú móvil ──
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('mobileMenu');
+  const hamburger = document.getElementById('hamburger');
+  if (menu && hamburger && !menu.contains(e.target) && !hamburger.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+</script>
 
 </body>
 </html>
