@@ -204,67 +204,96 @@
   }
 
   /* ── ELECTION CARDS ── */
+  .elec-seccion-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+    margin-bottom: 12px;
+    display: block;
+  }
+
   .elec-card {
     display: block;
     text-decoration: none;
     color: var(--black);
     border: 1px solid rgba(0,0,0,0.1);
-    padding: 24px 28px;
-    margin-bottom: 12px;
+    padding: 24px 24px 20px;
+    margin-bottom: 2px;
     background: var(--white);
     transition: border-color 0.2s, transform 0.15s;
     max-width: 640px;
   }
-  .elec-card:hover { border-color: rgba(0,0,0,0.3); transform: translateY(-1px); }
-  .elec-card--destacada {
+  .elec-card:hover { border-color: rgba(0,0,0,0.25); transform: translateY(-1px); }
+
+  /* Próxima — negra con dorado */
+  .elec-card--proxima {
+    background: var(--black);
+    border-color: var(--black);
+    border-left: 4px solid var(--gold);
+  }
+  .elec-card--proxima .elec-card-titulo { color: var(--white); font-size: clamp(28px, 5vw, 42px); }
+  .elec-card--proxima .elec-card-subtitulo { color: var(--silver); }
+  .elec-card--proxima .elec-card-fecha { color: var(--gold); }
+
+  /* Con resultados — negra estándar */
+  .elec-card--resultados {
     background: var(--black);
     border-color: var(--black);
   }
-  .elec-card--destacada:hover { border-color: var(--black); transform: translateY(-1px); }
-  .elec-card--destacada .elec-card-titulo,
-  .elec-card--destacada .elec-card-cta { color: var(--white); }
-  .elec-card--destacada .elec-card-subtitulo,
-  .elec-card--destacada .elec-card-fecha { color: var(--silver); }
-  .elec-card--destacada .elec-card-resumen {
+  .elec-card--resultados .elec-card-titulo { color: var(--white); }
+  .elec-card--resultados .elec-card-subtitulo { color: var(--silver); }
+  .elec-card--resultados .elec-card-fecha { color: var(--silver-dark); }
+  .elec-card--resultados .elec-card-resumen {
     color: var(--silver);
-    border-left-color: rgba(192,192,192,0.3);
-    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.08);
   }
+
   .elec-card-meta {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
   }
-  .elec-card-tag {
+  .elec-card-badge {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
     font-weight: 500;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--silver-dark);
-    border: 1px solid rgba(0,0,0,0.12);
-    padding: 3px 8px;
+    padding: 3px 10px;
   }
-  .elec-card-tag--resultados {
-    color: #FFD700;
-    border-color: rgba(255,215,0,0.5);
-    background: rgba(255,215,0,0.08);
+  .elec-card-badge--proxima {
+    background: var(--gold);
+    color: var(--black);
+  }
+  .elec-card-badge--resultados {
+    background: rgba(255,215,0,0.15);
+    color: var(--gold);
+    border: 1px solid rgba(255,215,0,0.4);
+  }
+  .elec-card-badge--archivo {
+    background: rgba(0,0,0,0.06);
+    color: var(--silver-dark);
+    border: 1px solid rgba(0,0,0,0.1);
   }
   .elec-card-fecha {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
-    color: var(--silver-dark);
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
   .elec-card-titulo {
     font-family: 'Oswald', sans-serif;
-    font-size: clamp(24px, 3vw, 32px);
+    font-size: clamp(24px, 4vw, 36px);
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--black);
-    line-height: 1.1;
+    line-height: 1;
     margin-bottom: 4px;
   }
   .elec-card-subtitulo {
@@ -273,25 +302,79 @@
     color: var(--silver-dark);
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
   .elec-card-resumen {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--black-soft);
     letter-spacing: 0.06em;
     margin-bottom: 16px;
-    padding: 8px 0;
+    padding: 10px 0;
     border-top: 1px solid rgba(0,0,0,0.08);
     border-bottom: 1px solid rgba(0,0,0,0.08);
   }
-  .elec-card-cta {
+
+  /* Botones dentro de la card */
+  .elec-card-btns {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .elec-card-btn {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    padding: 7px 14px;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    display: inline-block;
+  }
+  .elec-card-btn--guia {
+    background: var(--white);
+    color: var(--black);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .elec-card-btn--guia:hover { background: var(--silver); }
+  .elec-card-btn--resultados {
+    background: var(--gold);
+    color: var(--black);
+    border: 1px solid var(--gold);
+  }
+  .elec-card-btn--resultados:hover { background: #e6c200; }
+
+  /* Variantes para card blanca (archivo) */
+  .elec-card--archivo .elec-card-btn--guia {
+    background: var(--black);
+    color: var(--white);
+    border-color: var(--black);
+  }
+  .elec-card--archivo .elec-card-btn--guia:hover { background: #333; }
+  .elec-card--archivo .elec-card-btn--resultados {
+    background: transparent;
     color: var(--silver-dark);
+    border: 1px solid rgba(0,0,0,0.15);
+  }
+  .elec-card--archivo .elec-card-btn--resultados:hover {
+    background: var(--off-white);
+    color: var(--black);
+  }
+
+  /* Separador entre secciones */
+  .elec-separador {
+    margin: 36px 0 16px;
+    max-width: 640px;
+    border: none;
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+
+  @media (max-width: 600px) {
+    .elec-card { padding: 20px 18px 16px; }
+    .elec-card-btns { gap: 6px; }
+    .elec-card-btn { font-size: 10px; padding: 6px 12px; }
   }
 
   /* ── FOOTER ── */
@@ -433,37 +516,60 @@
   <div class="inner-page-inner">
     <h1 class="page-titulo">🗳️ Elecciones</h1>
     <div class="page-divider"></div>
-    <p class="page-texto">Para cada elección elaboramos una guía de todas las candidaturas — filtra por tu provincia y descubre qué partidos se presentan y qué proponen. Grandes y pequeños, con las mismas oportunidades: aquí ninguna formación tiene ventaja.</p>
-    <p class="page-texto">Cuando hay resultados, los publicamos tal como son: con abstención, votos nulos y el censo completo. No solo el porcentaje sobre votos válidos que los medios dan por defecto.</p>
 
-    <div class="page-divider" style="margin-top:48px;"></div>
+    <!-- PRÓXIMAS -->
+    <span class="elec-seccion-label">Próximas elecciones</span>
 
-    <span class="section-label">Resultados recientes</span>
-
-    <a href="elecciones-cyl-2026.html" class="elec-card elec-card--destacada">
+    <div class="elec-card elec-card--proxima" onclick="window.location='elecciones-andalucia-2026.html#resultados'" style="cursor:pointer">
       <div class="elec-card-meta">
-        <span class="elec-card-tag elec-card-tag--resultados">✓ Resultados disponibles</span>
+        <span class="elec-card-badge elec-card-badge--proxima">Próximamente</span>
+        <span class="elec-card-fecha">17 mayo 2026</span>
+      </div>
+      <div class="elec-card-titulo">Andalucía</div>
+      <div class="elec-card-subtitulo">Elecciones Autonómicas</div>
+      <div class="elec-card-btns">
+        <a href="elecciones-andalucia-2026.html#guia" class="elec-card-btn elec-card-btn--guia" onclick="event.stopPropagation()">📋 Guía de candidaturas</a>
+        <a href="elecciones-andalucia-2026.html#resultados" class="elec-card-btn elec-card-btn--resultados" onclick="event.stopPropagation()">📊 Resultados</a>
+      </div>
+    </div>
+
+    <hr class="elec-separador">
+
+    <!-- RESULTADOS RECIENTES -->
+    <span class="elec-seccion-label">Resultados recientes</span>
+
+    <div class="elec-card elec-card--resultados" onclick="window.location='elecciones-cyl-2026.html#resultados'" style="cursor:pointer">
+      <div class="elec-card-meta">
+        <span class="elec-card-badge elec-card-badge--resultados">✓ Resultados disponibles</span>
         <span class="elec-card-fecha">15 marzo 2026</span>
       </div>
       <div class="elec-card-titulo">Castilla y León</div>
       <div class="elec-card-subtitulo">Elecciones Autonómicas</div>
       <div class="elec-card-resumen">PP 33 · PSOE 30 · Vox 14 · UPL 3 · XAV 1 · SY 1</div>
-      <span class="elec-card-cta">Ver análisis completo ↗</span>
-    </a>
+      <div class="elec-card-btns">
+        <a href="elecciones-cyl-2026.html#guia" class="elec-card-btn elec-card-btn--guia" onclick="event.stopPropagation()">📋 Guía de candidaturas</a>
+        <a href="elecciones-cyl-2026.html#resultados" class="elec-card-btn elec-card-btn--resultados" onclick="event.stopPropagation()">📊 Resultados</a>
+      </div>
+    </div>
 
-    <div class="page-divider" style="margin-top:48px;"></div>
+    <hr class="elec-separador">
 
-    <span class="section-label">Archivo</span>
+    <!-- ARCHIVO -->
+    <span class="elec-seccion-label">Archivo</span>
 
-    <a href="elecciones-aragon-2026.html" class="elec-card">
+    <div class="elec-card elec-card--archivo" onclick="window.location='elecciones-aragon-2026.html#resultados'" style="cursor:pointer">
       <div class="elec-card-meta">
-        <span class="elec-card-tag">Guía de candidaturas</span>
-        <span class="elec-card-fecha">2026</span>
+        <span class="elec-card-badge elec-card-badge--archivo">Guía de candidaturas</span>
+        <span class="elec-card-fecha">8 febrero 2026</span>
       </div>
       <div class="elec-card-titulo">Aragón</div>
       <div class="elec-card-subtitulo">Elecciones Autonómicas</div>
-      <span class="elec-card-cta">Ver candidaturas ↗</span>
-    </a>
+      <div class="elec-card-btns">
+        <a href="elecciones-aragon-2026.html#guia" class="elec-card-btn elec-card-btn--guia" onclick="event.stopPropagation()">📋 Guía de candidaturas</a>
+        <a href="elecciones-aragon-2026.html#resultados" class="elec-card-btn elec-card-btn--resultados" onclick="event.stopPropagation()">📊 Resultados</a>
+      </div>
+    </div>
+
   </div>
 </div>
 

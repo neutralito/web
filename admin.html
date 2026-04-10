@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Neutralito</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --negro: #111111;
+  --plata: #C0C0C0;
+  --oro: #FFD700;
+  --azul: #2F3A4A;
+  --fondo: #f5f5f2;
+  --sup: #ffffff;
+  --sup2: #f0f0ed;
+  --borde: rgba(0,0,0,0.1);
+  --texto: #111111;
+  --texto2: #8a8a8a;
+}
+body { font-family: 'IBM Plex Sans', sans-serif; font-weight: 300; background: var(--fondo); }
+
+/* ── LOGIN ── */
+#login-screen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: var(--negro);
+}
+.login-box {
+  background: #1a1a1a; border: 1px solid rgba(255,255,255,0.08);
+  padding: 48px 40px; width: 360px; border-radius: 4px;
+}
+.login-logo {
+  font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: white;
+  margin-bottom: 4px;
+}
+.login-sub {
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--plata); margin-bottom: 32px;
+}
+.login-label {
+  display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4); margin-bottom: 8px;
+}
+.login-input {
+  width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1); color: white;
+  font-family: 'IBM Plex Mono', monospace; font-size: 14px;
+  margin-bottom: 20px; border-radius: 2px; outline: none;
+}
+.login-input:focus { border-color: var(--oro); }
+.login-btn {
+  width: 100%; padding: 11px; background: var(--oro); color: var(--negro);
+  border: none; font-family: 'Oswald', sans-serif; font-size: 14px;
+  font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; border-radius: 2px;
+}
+.login-btn:hover { background: #e6c200; }
+.login-error {
+  font-size: 12px; color: #ff6b6b; margin-top: 12px; display: none;
+}
+
+/* ── ADMIN ── */
+#admin-screen { display: none; min-height: 100vh; }
+.admin-wrap { display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 210px; flex-shrink: 0; background: var(--negro);
+  display: flex; flex-direction: column; position: fixed;
+  top: 0; left: 0; bottom: 0; z-index: 100;
+}
+.sb-logo {
+  padding: 24px 18px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.sb-logo-text {
+  font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: white;
+}
+.sb-logo-sub {
+  font-size: 10px; letter-spacing: 0.2em; color: var(--plata);
+  text-transform: uppercase; margin-top: 2px;
+}
+.sb-nav { flex: 1; padding: 14px 0; overflow-y: auto; }
+.sb-section {
+  font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
+  color: rgba(255,255,255,0.25); padding: 14px 18px 5px;
+}
+.sb-item {
+  display: flex; align-items: center; gap: 9px; padding: 9px 18px;
+  cursor: pointer; color: rgba(255,255,255,0.5); font-size: 13px;
+  letter-spacing: 0.03em; transition: all 0.15s;
+  border-left: 2px solid transparent; text-decoration: none;
+}
+.sb-item:hover { color: white; background: rgba(255,255,255,0.04); }
+.sb-item.active { color: var(--oro); border-left-color: var(--oro); background: rgba(255,215,0,0.06); }
+.sb-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.sb-footer {
+  padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sb-footer-text { font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 0.06em; }
+.sb-logout {
+  font-size: 10px; color: rgba(255,255,255,0.3); cursor: pointer;
+  letter-spacing: 0.06em; text-transform: uppercase; background: none; border: none;
+}
+.sb-logout:hover { color: rgba(255,255,255,0.6); }
+
+/* MAIN */
+.main { flex: 1; margin-left: 210px; display: flex; flex-direction: column; min-height: 100vh; }
+.topbar {
+  background: var(--sup); border-bottom: 1px solid var(--borde);
+  padding: 14px 28px; display: flex; align-items: center;
+  justify-content: space-between; position: sticky; top: 0; z-index: 50;
+}
+.topbar-title { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.firebase-status {
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 2px;
+}
+.firebase-status.online { background: rgba(15,110,86,0.1); color: #0f6e56; }
+.firebase-status.offline { background: rgba(255,107,107,0.1); color: #ff6b6b; }
+
+.content { flex: 1; padding: 28px; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* CARDS */
+.card {
+  background: var(--sup); border: 1px solid var(--borde);
+  border-radius: 4px; margin-bottom: 20px;
+}
+.card-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--borde);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--texto2);
+}
+.card-body { padding: 20px; }
+
+/* STATS */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--sup); border: 1px solid var(--borde);
+  border-radius: 4px; padding: 16px 18px;
+}
+.stat-val {
+  font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700;
+  color: var(--texto); line-height: 1;
+}
+.stat-lbl {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--texto2); margin-top: 5px;
+}
+
+/* BUTTONS */
+.btn {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 16px;
+  border: 1px solid var(--borde); background: var(--sup); color: var(--texto);
+  cursor: pointer; border-radius: 2px; transition: all 0.15s;
+}
+.btn:hover { background: var(--sup2); }
+.btn-primary { background: var(--negro); color: white; border-color: var(--negro); }
+.btn-primary:hover { background: #333; }
+.btn-gold { background: var(--oro); color: var(--negro); border-color: var(--oro); }
+.btn-gold:hover { background: #e6c200; }
+.btn-sm { font-size: 10px; padding: 5px 12px; }
+.btn-danger { color: #c0392b; border-color: rgba(192,57,43,0.2); }
+.btn-danger:hover { background: rgba(192,57,43,0.06); }
+
+/* TAGS */
+.tag {
+  display: inline-block; font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 2px;
+}
+.tag-ultimo { background: rgba(15,110,86,0.1); color: #0f6e56; }
+.tag-archivo { background: var(--sup2); color: var(--texto2); }
+.tag-proximo { background: rgba(24,95,165,0.1); color: #185fa5; }
+.tag-reciente { background: rgba(133,79,11,0.1); color: #854f0b; }
+.tag-publicado { background: rgba(15,110,86,0.1); color: #0f6e56; }
+.tag-borrador { background: var(--sup2); color: var(--texto2); }
+
+/* TABLE */
+.table { width: 100%; border-collapse: collapse; }
+.table th {
+  text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--texto2);
+  padding: 10px 14px; border-bottom: 1px solid var(--borde); font-weight: 400;
+}
+.table td {
+  padding: 12px 14px; border-bottom: 1px solid var(--borde);
+  font-size: 13px; color: var(--texto); vertical-align: middle;
+}
+.table tr:last-child td { border-bottom: none; }
+.table tr:hover td { background: var(--sup2); }
+.table td strong { font-weight: 500; }
+
+/* FORM */
+.form-row { margin-bottom: 16px; }
+.form-label {
+  display: block; font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--texto2);
+  margin-bottom: 6px; font-weight: 400;
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 9px 12px; border: 1px solid var(--borde);
+  border-radius: 2px; background: var(--sup); color: var(--texto);
+  font-family: 'IBM Plex Sans', sans-serif; font-size: 13px;
+  transition: border-color 0.15s; outline: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--oro); }
+.form-textarea { min-height: 90px; resize: vertical; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+/* UPLOAD */
+.upload-zone {
+  border: 1px dashed var(--borde); border-radius: 2px;
+  padding: 28px; text-align: center; cursor: pointer;
+  transition: all 0.15s; color: var(--texto2); font-size: 13px;
+}
+.upload-zone:hover { border-color: var(--oro); background: rgba(255,215,0,0.02); }
+.upload-zone-icon {
+  font-family: 'IBM Plex Mono', monospace; font-size: 28px;
+  margin-bottom: 10px; display: block; opacity: 0.4;
+}
+.upload-zone-hint {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--texto2); margin-top: 5px;
+}
+
+/* TABS */
+.tabs-bar { display: flex; gap: 2px; margin-bottom: 18px; border-bottom: 1px solid var(--borde); }
+.tab-btn {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 18px;
+  cursor: pointer; color: var(--texto2); background: none; border: none;
+  border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s;
+}
+.tab-btn:hover { color: var(--texto); }
+.tab-btn.active { color: var(--texto); border-bottom-color: var(--negro); }
+
+/* MODAL */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6); z-index: 200;
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--sup); border-radius: 4px; border: 1px solid var(--borde);
+  width: 520px; max-width: 100%; max-height: 90vh; overflow-y: auto;
+}
+.modal-header {
+  padding: 18px 22px; border-bottom: 1px solid var(--borde);
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; background: var(--sup); z-index: 1;
+}
+.modal-title { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--texto2); line-height: 1; padding: 0; }
+.modal-body { padding: 22px; }
+.modal-footer {
+  padding: 16px 22px; border-top: 1px solid var(--borde);
+  display: flex; justify-content: flex-end; gap: 8px;
+  position: sticky; bottom: 0; background: var(--sup);
+}
+
+/* ALERTS */
+.alert {
+  padding: 10px 14px; border-radius: 2px; font-size: 12px;
+  font-family: 'IBM Plex Mono', monospace; margin-bottom: 14px;
+}
+.alert-success { background: rgba(15,110,86,0.08); color: #0f6e56; border-left: 3px solid #0f6e56; }
+.alert-info { background: rgba(24,95,165,0.08); color: #185fa5; border-left: 3px solid #185fa5; }
+.alert-warning { background: rgba(133,79,11,0.08); color: #854f0b; border-left: 3px solid #854f0b; }
+.alert-error { background: rgba(192,57,43,0.08); color: #c0392b; border-left: 3px solid #c0392b; }
+
+/* PARTIDO ROW */
+.partido-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--borde);
+}
+.partido-row:last-child { border-bottom: none; }
+.partido-color { width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0; }
+.partido-siglas { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; width: 90px; }
+.partido-nombre { flex: 1; font-size: 12px; color: var(--texto2); }
+.partido-votos { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--texto2); width: 55px; text-align: right; }
+.partido-pct { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; width: 50px; text-align: right; }
+
+/* PREVIEW */
+.preview-header {
+  background: var(--negro); padding: 18px 20px; border-radius: 2px;
+  margin-bottom: 14px; border-left: 3px solid var(--oro);
+}
+.preview-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  letter-spacing: 0.3em; text-transform: uppercase; color: var(--oro); margin-bottom: 4px;
+}
+.preview-title { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; color: white; }
+
+/* LOADING */
+.loading {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--texto2);
+  padding: 20px 0;
+}
+.loading-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--oro);
+  animation: pulse 1s infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+/* EMPTY */
+.empty-state { text-align: center; padding: 48px 20px; }
+.empty-state-title { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--texto2); margin-bottom: 8px; }
+.empty-state-sub { font-size: 13px; color: var(--texto2); }
+
+@media (max-width: 768px) {
+  .sidebar { width: 100%; position: relative; flex-direction: row; flex-wrap: wrap; }
+  .main { margin-left: 0; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Neutralito</div>
+    <div class="login-sub">Panel de administración</div>
+    <label class="login-label">Contraseña</label>
+    <input type="password" class="login-input" id="pwd-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- ══ ADMIN ══ -->
+<div id="admin-screen">
+  <div class="admin-wrap">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-logo">
+        <div class="sb-logo-text">Neutralito</div>
+        <div class="sb-logo-sub">Admin</div>
+      </div>
+      <nav class="sb-nav">
+        <div class="sb-section">Contenido</div>
+        <div class="sb-item active" onclick="navTo('cis',this)"><span class="sb-dot"></span>Barómetro CIS</div>
+        <div class="sb-item" onclick="navTo('elecciones',this)"><span class="sb-dot"></span>Elecciones</div>
+        <div class="sb-item" onclick="navTo('partidos',this)"><span class="sb-dot"></span>Guía de partidos</div>
+        <div class="sb-item" onclick="navTo('conceptos',this)"><span class="sb-dot"></span>Conceptos</div>
+        <div class="sb-item" onclick="navTo('actualidad',this)"><span class="sb-dot"></span>Actualidad</div>
+      </nav>
+      <div class="sb-footer">
+        <span class="sb-footer-text">v1.0</span>
+        <button class="sb-logout" onclick="logout()">Salir</button>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title" id="topbar-title">Barómetro CIS</span>
+        <div class="topbar-right">
+          <span class="firebase-status offline" id="fb-status">Conectando...</span>
+          <a href="datos-cis.html" target="_blank" class="btn btn-sm">Ver web</a>
+        </div>
+      </div>
+
+      <div class="content">
+        <div id="global-alert" style="display:none"></div>
+
+        <!-- ══ PAGE: CIS ══ -->
+        <div class="page active" id="page-cis">
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-val" id="stat-total-cis">—</div><div class="stat-lbl">Barómetros</div></div>
+            <div class="stat-card"><div class="stat-val" id="stat-ultimo-cis">—</div><div class="stat-lbl">Último mes</div></div>
+            <div class="stat-card"><div class="stat-val" id="stat-muestra-cis">—</div><div class="stat-lbl">Última muestra</div></div>
+            <div class="stat-card"><div class="stat-val">3</div><div class="stat-lbl">Vistas activas</div></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Barómetros publicados</span>
+              <button class="btn btn-primary btn-sm" onclick="abrirModalCIS()">+ Nuevo barómetro</button>
+            </div>
+            <div id="cis-tabla-wrap">
+              <div class="loading" style="padding:20px"><span class="loading-dot"></span>Cargando...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ PAGE: ELECCIONES ══ -->
+        <div class="page" id="page-elecciones">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Elecciones</span>
+              <button class="btn btn-primary btn-sm" onclick="abrirModalEleccion()">+ Nueva elección</button>
+            </div>
+            <div id="elecciones-tabla-wrap">
+              <div class="loading" style="padding:20px"><span class="loading-dot"></span>Cargando...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ PAGE: PARTIDOS ══ -->
+        <div class="page" id="page-partidos">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Guía de partidos</span>
+              <button class="btn btn-primary btn-sm" onclick="abrirModalPartido()">+ Añadir partido</button>
+            </div>
+            <div id="partidos-lista-wrap" class="card-body">
+              <div class="loading"><span class="loading-dot"></span>Cargando...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ PAGE: CONCEPTOS ══ -->
+        <div class="page" id="page-conceptos">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Glosario</span>
+              <button class="btn btn-primary btn-sm" onclick="abrirModalConcepto()">+ Nuevo concepto</button>
+            </div>
+            <div id="conceptos-tabla-wrap">
+              <div class="loading" style="padding:20px"><span class="loading-dot"></span>Cargando...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ PAGE: ACTUALIDAD ══ -->
+        <div class="page" id="page-actualidad">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Artículos</span>
+              <button class="btn btn-primary btn-sm" onclick="abrirModalArticulo()">+ Nuevo artículo</button>
+            </div>
+            <div id="actualidad-tabla-wrap">
+              <div class="loading" style="padding:20px"><span class="loading-dot"></span>Cargando...</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /admin-wrap -->
+</div><!-- /admin-screen -->
+
+<!-- ══ MODAL: CIS ══ -->
+<div class="modal-overlay" id="modal-cis">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-cis-titulo">Nuevo barómetro</span>
+      <button class="modal-close" onclick="cerrarModal('modal-cis')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="tabs-bar">
+        <button class="tab-btn active" id="tab-csv-btn" onclick="switchTabCIS('csv')">Subir CSV</button>
+        <button class="tab-btn" id="tab-manual-btn" onclick="switchTabCIS('manual')">Manual</button>
+      </div>
+
+      <!-- CSV -->
+      <div id="cis-tab-csv">
+        <div class="form-grid">
+          <div class="form-row">
+            <label class="form-label">Mes del barómetro</label>
+            <input class="form-input" type="month" id="cis-mes">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Estado</label>
+            <select class="form-select" id="cis-estado">
+              <option value="ultimo">Último CIS</option>
+              <option value="archivo">Archivo</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Archivo CSV del CIS (microdatos)</label>
+          <div class="upload-zone" onclick="document.getElementById('cis-csv-file').click()">
+            <span class="upload-zone-icon">↑</span>
+            <div>Pulsa para seleccionar el CSV</div>
+            <div class="upload-zone-hint">El sistema leerá INTENCIONG automáticamente</div>
+          </div>
+          <input type="file" id="cis-csv-file" accept=".csv" style="display:none" onchange="procesarCSV(this)">
+        </div>
+        <div id="cis-csv-resultado" style="display:none">
+          <div class="alert alert-success" id="cis-csv-msg"></div>
+          <div id="cis-csv-preview"></div>
+        </div>
+      </div>
+
+      <!-- MANUAL -->
+      <div id="cis-tab-manual" style="display:none">
+        <div class="form-grid">
+          <div class="form-row">
+            <label class="form-label">Mes</label>
+            <input class="form-input" type="month" id="cis-mes-m">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Estado</label>
+            <select class="form-select" id="cis-estado-m">
+              <option value="ultimo">Último CIS</option>
+              <option value="archivo">Archivo</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid-3">
+          <div class="form-row">
+            <label class="form-label">Muestra total</label>
+            <input class="form-input" type="number" id="cis-muestra" placeholder="4027">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Indecisos</label>
+            <input class="form-input" type="number" id="cis-indecisos" placeholder="664">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Abstención</label>
+            <input class="form-input" type="number" id="cis-abstencion" placeholder="236">
+          </div>
+        </div>
+        <div class="form-grid-3">
+          <div class="form-row">
+            <label class="form-label">En blanco</label>
+            <input class="form-input" type="number" id="cis-blanco" placeholder="176">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Nulo</label>
+            <input class="form-input" type="number" id="cis-nulo" placeholder="73">
+          </div>
+          <div class="form-row">
+            <label class="form-label">N.C.</label>
+            <input class="form-input" type="number" id="cis-nc" placeholder="0">
+          </div>
+        </div>
+        <div class="alert alert-info">Los partidos y sus votos se añaden uno a uno abajo.</div>
+        <div id="cis-partidos-manual" style="margin-bottom:14px"></div>
+        <button class="btn btn-sm" onclick="añadirFilaPartido()">+ Añadir partido</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="cerrarModal('modal-cis')">Cancelar</button>
+      <button class="btn btn-sm" onclick="previewCIS()">Previsualizar</button>
+      <button class="btn btn-gold" onclick="guardarCIS()">Guardar en Firebase</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: ELECCIÓN ══ -->
+<div class="modal-overlay" id="modal-eleccion">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-eleccion-titulo">Nueva elección</span>
+      <button class="modal-close" onclick="cerrarModal('modal-eleccion')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="eleccion-id">
+      <div class="form-row">
+        <label class="form-label">Nombre</label>
+        <input class="form-input" id="eleccion-nombre" placeholder="Ej: Elecciones Generales 2023">
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label">Fecha</label>
+          <input class="form-input" type="date" id="eleccion-fecha">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Ámbito</label>
+          <select class="form-select" id="eleccion-ambito">
+            <option value="nacional">Nacional</option>
+            <option value="autonomico">Autonómico</option>
+            <option value="municipal">Municipal</option>
+            <option value="europeo">Europeo</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label">Estado</label>
+          <select class="form-select" id="eleccion-estado">
+            <option value="proximo">Próximamente</option>
+            <option value="reciente">Resultados recientes</option>
+            <option value="archivo">Archivo</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label">CCAA (si aplica)</label>
+          <input class="form-input" id="eleccion-ccaa" placeholder="Ej: Cataluña">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="cerrarModal('modal-eleccion')">Cancelar</button>
+      <button class="btn btn-gold" onclick="guardarEleccion()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: PARTIDO ══ -->
+<div class="modal-overlay" id="modal-partido">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-partido-titulo">Añadir partido</span>
+      <button class="modal-close" onclick="cerrarModal('modal-partido')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="partido-id">
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label">Siglas</label>
+          <input class="form-input" id="partido-siglas" placeholder="PSOE">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Nombre completo</label>
+          <input class="form-input" id="partido-nombre" placeholder="Partido Socialista Obrero Español">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label">Color</label>
+          <input class="form-input" type="color" id="partido-color" value="#E3000F" style="height:40px;padding:4px 8px;">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Web oficial</label>
+          <input class="form-input" id="partido-web" placeholder="https://psoe.es">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label">X / Twitter</label>
+          <input class="form-input" id="partido-twitter" placeholder="@PSOE">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Telegram</label>
+          <input class="form-input" id="partido-telegram" placeholder="@psoe">
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">URL del logo</label>
+        <input class="form-input" id="partido-logo" placeholder="https://...">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="cerrarModal('modal-partido')">Cancelar</button>
+      <button class="btn btn-gold" onclick="guardarPartido()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: CONCEPTO ══ -->
+<div class="modal-overlay" id="modal-concepto">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-concepto-titulo">Nuevo concepto</span>
+      <button class="modal-close" onclick="cerrarModal('modal-concepto')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="concepto-id">
+      <div class="form-row">
+        <label class="form-label">Término</label>
+        <input class="form-input" id="concepto-termino" placeholder="Ej: Abstención técnica">
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label">Categoría</label>
+          <select class="form-select" id="concepto-categoria">
+            <option value="electoral">Electoral</option>
+            <option value="demoscopico">Demoscópico</option>
+            <option value="institucional">Institucional</option>
+            <option value="geopolitica">Geopolítica</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Estado</label>
+          <select class="form-select" id="concepto-estado">
+            <option value="borrador">Borrador</option>
+            <option value="publicado">Publicado</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Definición</label>
+        <textarea class="form-textarea" id="concepto-definicion" placeholder="Explica el concepto de forma clara..."></textarea>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Fuente (opcional)</label>
+        <input class="form-input" id="concepto-fuente" placeholder="https://...">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="cerrarModal('modal-concepto')">Cancelar</button>
+      <button class="btn btn-sm" onclick="guardarConcepto('borrador')">Guardar borrador</button>
+      <button class="btn btn-gold" onclick="guardarConcepto('publicado')">Publicar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: ARTÍCULO ══ -->
+<div class="modal-overlay" id="modal-articulo">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-articulo-titulo">Nuevo artículo</span>
+      <button class="modal-close" onclick="cerrarModal('modal-articulo')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="articulo-id">
+      <div class="form-row">
+        <label class="form-label">Título</label>
+        <input class="form-input" id="articulo-titulo" placeholder="Ej: Por qué nadie habla de esto">
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label">Categoría</label>
+          <select class="form-select" id="articulo-categoria">
+            <option value="analisis">Análisis</option>
+            <option value="geopolitica">Geopolítica</option>
+            <option value="electoral">Electoral</option>
+            <option value="economia">Economía</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Estado</label>
+          <select class="form-select" id="articulo-estado">
+            <option value="borrador">Borrador</option>
+            <option value="publicado">Publicado</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Contenido</label>
+        <textarea class="form-textarea" id="articulo-contenido" style="min-height:130px" placeholder="Escribe el artículo aquí..."></textarea>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Enlace externo (opcional)</label>
+        <input class="form-input" id="articulo-enlace" placeholder="https://...">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="cerrarModal('modal-articulo')">Cancelar</button>
+      <button class="btn btn-sm" onclick="guardarArticulo('borrador')">Guardar borrador</button>
+      <button class="btn btn-gold" onclick="guardarArticulo('publicado')">Publicar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: PREVIEW CIS ══ -->
+<div class="modal-overlay" id="modal-preview-cis">
+  <div class="modal" style="width:580px">
+    <div class="modal-header">
+      <span class="modal-title">Previsualización</span>
+      <button class="modal-close" onclick="cerrarModal('modal-preview-cis')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-warning" style="margin-bottom:16px">Vista previa — los datos aún no están publicados</div>
+      <div id="preview-cis-contenido"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="cerrarModal('modal-preview-cis')">Cerrar</button>
+      <button class="btn btn-gold" onclick="guardarCIS()">Publicar en Firebase</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FIREBASE ══ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import {
+  getFirestore, collection, doc,
+  getDocs, addDoc, setDoc, deleteDoc, updateDoc,
+  onSnapshot, query, orderBy, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+// ── CONFIGURACIÓN ──
+const firebaseConfig = {
+  apiKey: "AIzaSyDsA-PS8VATZ-AylANWacg_c6U_Py4xdFY",
+  authDomain: "neutralito-80853.firebaseapp.com",
+  projectId: "neutralito-80853",
+  storageBucket: "neutralito-80853.firebasestorage.app",
+  messagingSenderId: "898660780536",
+  appId: "1:898660780536:web:8c7025efdabde4ffa4ee0d",
+  measurementId: "G-HEFNT3BGW3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// ── ESTADO GLOBAL ──
+window._db = db;
+window._fs = { collection, doc, getDocs, addDoc, setDoc, deleteDoc, updateDoc, onSnapshot, query, orderBy, serverTimestamp };
+
+// ── ESTADO FIREBASE ──
+document.getElementById('fb-status').textContent  = 'Firebase OK';
+document.getElementById('fb-status').className    = 'firebase-status online';
+
+// ── CARGA INICIAL ──
+cargarCIS();
+cargarElecciones();
+cargarPartidos();
+cargarConceptos();
+cargarActualidad();
+
+// ════════════════════════════════════
+// CIS
+// ════════════════════════════════════
+async function cargarCIS() {
+  const { collection, getDocs, query, orderBy } = window._fs;
+  const snap = await getDocs(query(collection(db, 'barometros'), orderBy('fecha','desc')));
+  const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  document.getElementById('stat-total-cis').textContent = docs.length || '0';
+  if (docs.length > 0) {
+    document.getElementById('stat-ultimo-cis').textContent = docs[0].mes || '—';
+    document.getElementById('stat-muestra-cis').textContent = (docs[0].muestra||0).toLocaleString('es-ES');
+  }
+
+  if (docs.length === 0) {
+    document.getElementById('cis-tabla-wrap').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-title">Sin barómetros</div>
+        <div class="empty-state-sub">Añade el primero con el botón de arriba</div>
+      </div>`;
+    return;
+  }
+
+  const TAG = { ultimo:'<span class="tag tag-ultimo">Último CIS</span>', archivo:'<span class="tag tag-archivo">Archivo</span>' };
+  let html = `<table class="table"><thead><tr>
+    <th>Mes</th><th>Muestra</th><th>Partidos</th><th>Estado</th><th>Acciones</th>
+  </tr></thead><tbody>`;
+  docs.forEach(d => {
+    html += `<tr>
+      <td><strong>${d.mes}</strong></td>
+      <td style="font-family:'IBM Plex Mono',monospace">${(d.muestra||0).toLocaleString('es-ES')}</td>
+      <td style="font-family:'IBM Plex Mono',monospace">${(d.partidos||[]).length}</td>
+      <td>${TAG[d.estado]||''}</td>
+      <td style="display:flex;gap:6px;align-items:center">
+        <button class="btn btn-sm" onclick="window._previewCISDoc('${d.id}')">Previsualizar</button>
+        <button class="btn btn-sm" onclick="window._cambiarEstadoCIS('${d.id}','${d.estado}')">Cambiar estado</button>
+        <button class="btn btn-sm btn-danger" onclick="window._eliminarCIS('${d.id}')">Eliminar</button>
+      </td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('cis-tabla-wrap').innerHTML = html;
+}
+window._cargarCIS = cargarCIS;
+
+window._cambiarEstadoCIS = async function(id, estadoActual) {
+  const nuevo = estadoActual === 'ultimo' ? 'archivo' : 'ultimo';
+  await window._fs.updateDoc(window._fs.doc(db, 'barometros', id), { estado: nuevo });
+  mostrarAlerta('Estado actualizado', 'success');
+  cargarCIS();
+};
+
+window._eliminarCIS = async function(id) {
+  if (!confirm('¿Eliminar este barómetro?')) return;
+  await window._fs.deleteDoc(window._fs.doc(db, 'barometros', id));
+  mostrarAlerta('Barómetro eliminado', 'success');
+  cargarCIS();
+};
+
+window._previewCISDoc = async function(id) {
+  const snap = await window._fs.getDocs(window._fs.collection(db, 'barometros'));
+  const d = snap.docs.find(x => x.id === id);
+  if (d) mostrarPreviewCIS({ id: d.id, ...d.data() });
+};
+
+// ════════════════════════════════════
+// ELECCIONES
+// ════════════════════════════════════
+async function cargarElecciones() {
+  const { collection, getDocs, query, orderBy } = window._fs;
+  const snap = await getDocs(query(collection(db, 'elecciones'), orderBy('fecha','desc')));
+  const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  if (docs.length === 0) {
+    document.getElementById('elecciones-tabla-wrap').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-title">Sin elecciones</div>
+        <div class="empty-state-sub">Añade la primera con el botón de arriba</div>
+      </div>`;
+    return;
+  }
+
+  const TAG = {
+    proximo: '<span class="tag tag-proximo">Próximamente</span>',
+    reciente: '<span class="tag tag-reciente">Resultados recientes</span>',
+    archivo: '<span class="tag tag-archivo">Archivo</span>'
+  };
+  const AMBITO = { nacional:'Nacional', autonomico:'Autonómico', municipal:'Municipal', europeo:'Europeo' };
+
+  let html = `<table class="table"><thead><tr>
+    <th>Nombre</th><th>Fecha</th><th>Ámbito</th><th>Estado</th><th>Acciones</th>
+  </tr></thead><tbody>`;
+  docs.forEach(d => {
+    html += `<tr>
+      <td><strong>${d.nombre}</strong>${d.ccaa ? `<br><span style="font-size:11px;color:var(--texto2)">${d.ccaa}</span>` : ''}</td>
+      <td style="font-size:12px">${d.fecha||'—'}</td>
+      <td>${AMBITO[d.ambito]||d.ambito||'—'}</td>
+      <td>${TAG[d.estado]||''}</td>
+      <td style="display:flex;gap:6px;align-items:center">
+        <button class="btn btn-sm" onclick="window._editarEleccion('${d.id}')">Editar</button>
+        <button class="btn btn-sm btn-danger" onclick="window._eliminarEleccion('${d.id}')">Eliminar</button>
+      </td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('elecciones-tabla-wrap').innerHTML = html;
+}
+window._cargarElecciones = cargarElecciones;
+
+window._editarEleccion = async function(id) {
+  const snap = await window._fs.getDocs(window._fs.collection(db, 'elecciones'));
+  const d = snap.docs.find(x => x.id === id);
+  if (!d) return;
+  const datos = d.data();
+  document.getElementById('eleccion-id').value = id;
+  document.getElementById('eleccion-nombre').value = datos.nombre || '';
+  document.getElementById('eleccion-fecha').value = datos.fecha || '';
+  document.getElementById('eleccion-ambito').value = datos.ambito || 'nacional';
+  document.getElementById('eleccion-estado').value = datos.estado || 'archivo';
+  document.getElementById('eleccion-ccaa').value = datos.ccaa || '';
+  document.getElementById('modal-eleccion-titulo').textContent = 'Editar elección';
+  document.getElementById('modal-eleccion').classList.add('open');
+};
+
+window._eliminarEleccion = async function(id) {
+  if (!confirm('¿Eliminar esta elección?')) return;
+  await window._fs.deleteDoc(window._fs.doc(db, 'elecciones', id));
+  mostrarAlerta('Elección eliminada', 'success');
+  cargarElecciones();
+};
+
+// ════════════════════════════════════
+// PARTIDOS
+// ════════════════════════════════════
+async function cargarPartidos() {
+  const { collection, getDocs, query, orderBy } = window._fs;
+  const snap = await getDocs(query(collection(db, 'partidos'), orderBy('siglas')));
+  const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  if (docs.length === 0) {
+    document.getElementById('partidos-lista-wrap').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-title">Sin partidos</div>
+        <div class="empty-state-sub">Añade el primero con el botón de arriba</div>
+      </div>`;
+    return;
+  }
+
+  let html = '';
+  docs.forEach(d => {
+    html += `<div class="partido-row">
+      <div class="partido-color" style="background:${d.color||'#ccc'}"></div>
+      <span class="partido-siglas">${d.siglas||''}</span>
+      <span class="partido-nombre">${d.nombre||''}</span>
+      ${d.web ? `<a href="${d.web}" target="_blank" style="font-size:11px;color:var(--texto2);margin-right:8px">${d.web.replace('https://','')}</a>` : ''}
+      <div style="margin-left:auto;display:flex;gap:6px">
+        <button class="btn btn-sm" onclick="window._editarPartido('${d.id}')">Editar</button>
+        <button class="btn btn-sm btn-danger" onclick="window._eliminarPartido('${d.id}')">Quitar</button>
+      </div>
+    </div>`;
+  });
+  document.getElementById('partidos-lista-wrap').innerHTML = html;
+}
+window._cargarPartidos = cargarPartidos;
+
+window._editarPartido = async function(id) {
+  const snap = await window._fs.getDocs(window._fs.collection(db, 'partidos'));
+  const d = snap.docs.find(x => x.id === id);
+  if (!d) return;
+  const datos = d.data();
+  document.getElementById('partido-id').value = id;
+  document.getElementById('partido-siglas').value = datos.siglas || '';
+  document.getElementById('partido-nombre').value = datos.nombre || '';
+  document.getElementById('partido-color').value = datos.color || '#888888';
+  document.getElementById('partido-web').value = datos.web || '';
+  document.getElementById('partido-twitter').value = datos.twitter || '';
+  document.getElementById('partido-telegram').value = datos.telegram || '';
+  document.getElementById('partido-logo').value = datos.logo || '';
+  document.getElementById('modal-partido-titulo').textContent = 'Editar partido';
+  document.getElementById('modal-partido').classList.add('open');
+};
+
+window._eliminarPartido = async function(id) {
+  if (!confirm('¿Eliminar este partido?')) return;
+  await window._fs.deleteDoc(window._fs.doc(db, 'partidos', id));
+  mostrarAlerta('Partido eliminado', 'success');
+  cargarPartidos();
+};
+
+// ════════════════════════════════════
+// CONCEPTOS
+// ════════════════════════════════════
+async function cargarConceptos() {
+  const { collection, getDocs, query, orderBy } = window._fs;
+  const snap = await getDocs(query(collection(db, 'conceptos'), orderBy('termino')));
+  const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  if (docs.length === 0) {
+    document.getElementById('conceptos-tabla-wrap').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-title">Sin conceptos</div>
+        <div class="empty-state-sub">Añade el primero con el botón de arriba</div>
+      </div>`;
+    return;
+  }
+
+  const CAT = { electoral:'Electoral', demoscopico:'Demoscópico', institucional:'Institucional', geopolitica:'Geopolítica' };
+  let html = `<table class="table"><thead><tr>
+    <th>Término</th><th>Categoría</th><th>Estado</th><th>Acciones</th>
+  </tr></thead><tbody>`;
+  docs.forEach(d => {
+    const tag = d.estado === 'publicado'
+      ? '<span class="tag tag-publicado">Publicado</span>'
+      : '<span class="tag tag-borrador">Borrador</span>';
+    html += `<tr>
+      <td><strong>${d.termino}</strong></td>
+      <td>${CAT[d.categoria]||d.categoria||'—'}</td>
+      <td>${tag}</td>
+      <td style="display:flex;gap:6px">
+        <button class="btn btn-sm" onclick="window._editarConcepto('${d.id}')">Editar</button>
+        <button class="btn btn-sm btn-danger" onclick="window._eliminarConcepto('${d.id}')">Eliminar</button>
+      </td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('conceptos-tabla-wrap').innerHTML = html;
+}
+window._cargarConceptos = cargarConceptos;
+
+window._editarConcepto = async function(id) {
+  const snap = await window._fs.getDocs(window._fs.collection(db, 'conceptos'));
+  const d = snap.docs.find(x => x.id === id);
+  if (!d) return;
+  const datos = d.data();
+  document.getElementById('concepto-id').value = id;
+  document.getElementById('concepto-termino').value = datos.termino || '';
+  document.getElementById('concepto-categoria').value = datos.categoria || 'electoral';
+  document.getElementById('concepto-estado').value = datos.estado || 'borrador';
+  document.getElementById('concepto-definicion').value = datos.definicion || '';
+  document.getElementById('concepto-fuente').value = datos.fuente || '';
+  document.getElementById('modal-concepto-titulo').textContent = 'Editar concepto';
+  document.getElementById('modal-concepto').classList.add('open');
+};
+
+window._eliminarConcepto = async function(id) {
+  if (!confirm('¿Eliminar este concepto?')) return;
+  await window._fs.deleteDoc(window._fs.doc(db, 'conceptos', id));
+  mostrarAlerta('Concepto eliminado', 'success');
+  cargarConceptos();
+};
+
+// ════════════════════════════════════
+// ACTUALIDAD
+// ════════════════════════════════════
+async function cargarActualidad() {
+  const { collection, getDocs, query, orderBy } = window._fs;
+  const snap = await getDocs(query(collection(db, 'actualidad'), orderBy('creado','desc')));
+  const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  if (docs.length === 0) {
+    document.getElementById('actualidad-tabla-wrap').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-title">Sin artículos</div>
+        <div class="empty-state-sub">Escribe el primero con el botón de arriba</div>
+      </div>`;
+    return;
+  }
+
+  const CAT = { analisis:'Análisis', geopolitica:'Geopolítica', electoral:'Electoral', economia:'Economía' };
+  let html = `<table class="table"><thead><tr>
+    <th>Título</th><th>Categoría</th><th>Estado</th><th>Acciones</th>
+  </tr></thead><tbody>`;
+  docs.forEach(d => {
+    const tag = d.estado === 'publicado'
+      ? '<span class="tag tag-publicado">Publicado</span>'
+      : '<span class="tag tag-borrador">Borrador</span>';
+    html += `<tr>
+      <td><strong>${d.titulo}</strong></td>
+      <td>${CAT[d.categoria]||d.categoria||'—'}</td>
+      <td>${tag}</td>
+      <td style="display:flex;gap:6px">
+        <button class="btn btn-sm" onclick="window._editarArticulo('${d.id}')">Editar</button>
+        <button class="btn btn-sm btn-danger" onclick="window._eliminarArticulo('${d.id}')">Eliminar</button>
+      </td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('actualidad-tabla-wrap').innerHTML = html;
+}
+window._cargarActualidad = cargarActualidad;
+
+window._editarArticulo = async function(id) {
+  const snap = await window._fs.getDocs(window._fs.collection(db, 'actualidad'));
+  const d = snap.docs.find(x => x.id === id);
+  if (!d) return;
+  const datos = d.data();
+  document.getElementById('articulo-id').value = id;
+  document.getElementById('articulo-titulo').value = datos.titulo || '';
+  document.getElementById('articulo-categoria').value = datos.categoria || 'analisis';
+  document.getElementById('articulo-estado').value = datos.estado || 'borrador';
+  document.getElementById('articulo-contenido').value = datos.contenido || '';
+  document.getElementById('articulo-enlace').value = datos.enlace || '';
+  document.getElementById('modal-articulo-titulo').textContent = 'Editar artículo';
+  document.getElementById('modal-articulo').classList.add('open');
+};
+
+window._eliminarArticulo = async function(id) {
+  if (!confirm('¿Eliminar este artículo?')) return;
+  await window._fs.deleteDoc(window._fs.doc(db, 'actualidad', id));
+  mostrarAlerta('Artículo eliminado', 'success');
+  cargarActualidad();
+};
+
+// ════════════════════════════════════
+// GUARDAR FUNCIONES (expuestas globalmente)
+// ════════════════════════════════════
+
+window.guardarCIS = async function() {
+  const datos = window._cisDatosActuales;
+  if (!datos) { alert('Primero sube un CSV o introduce los datos manualmente'); return; }
+  try {
+    const { collection, addDoc, serverTimestamp } = window._fs;
+    await addDoc(collection(db, 'barometros'), {
+      ...datos,
+      creado: serverTimestamp()
+    });
+    cerrarModal('modal-cis');
+    cerrarModal('modal-preview-cis');
+    mostrarAlerta('Barómetro guardado en Firebase', 'success');
+    cargarCIS();
+    window._cisDatosActuales = null;
+  } catch(e) {
+    mostrarAlerta('Error al guardar: ' + e.message, 'error');
+  }
+};
+
+window.guardarEleccion = async function() {
+  const id = document.getElementById('eleccion-id').value;
+  const datos = {
+    nombre: document.getElementById('eleccion-nombre').value,
+    fecha:  document.getElementById('eleccion-fecha').value,
+    ambito: document.getElementById('eleccion-ambito').value,
+    estado: document.getElementById('eleccion-estado').value,
+    ccaa:   document.getElementById('eleccion-ccaa').value,
+  };
+  if (!datos.nombre) { alert('El nombre es obligatorio'); return; }
+  try {
+    const { collection, addDoc, doc, setDoc, serverTimestamp } = window._fs;
+    if (id) {
+      await setDoc(doc(db, 'elecciones', id), { ...datos, actualizado: serverTimestamp() }, { merge: true });
+    } else {
+      await addDoc(collection(db, 'elecciones'), { ...datos, creado: serverTimestamp() });
+    }
+    cerrarModal('modal-eleccion');
+    mostrarAlerta('Elección guardada', 'success');
+    cargarElecciones();
+    document.getElementById('eleccion-id').value = '';
+    document.getElementById('modal-eleccion-titulo').textContent = 'Nueva elección';
+  } catch(e) {
+    mostrarAlerta('Error al guardar: ' + e.message, 'error');
+  }
+};
+
+window.guardarPartido = async function() {
+  const id = document.getElementById('partido-id').value;
+  const datos = {
+    siglas:   document.getElementById('partido-siglas').value,
+    nombre:   document.getElementById('partido-nombre').value,
+    color:    document.getElementById('partido-color').value,
+    web:      document.getElementById('partido-web').value,
+    twitter:  document.getElementById('partido-twitter').value,
+    telegram: document.getElementById('partido-telegram').value,
+    logo:     document.getElementById('partido-logo').value,
+  };
+  if (!datos.siglas) { alert('Las siglas son obligatorias'); return; }
+  try {
+    const { collection, addDoc, doc, setDoc, serverTimestamp } = window._fs;
+    if (id) {
+      await setDoc(doc(db, 'partidos', id), { ...datos, actualizado: serverTimestamp() }, { merge: true });
+    } else {
+      await addDoc(collection(db, 'partidos'), { ...datos, creado: serverTimestamp() });
+    }
+    cerrarModal('modal-partido');
+    mostrarAlerta('Partido guardado', 'success');
+    cargarPartidos();
+    document.getElementById('partido-id').value = '';
+    document.getElementById('modal-partido-titulo').textContent = 'Añadir partido';
+  } catch(e) {
+    mostrarAlerta('Error al guardar: ' + e.message, 'error');
+  }
+};
+
+window.guardarConcepto = async function(estadoForzado) {
+  const id = document.getElementById('concepto-id').value;
+  const datos = {
+    termino:    document.getElementById('concepto-termino').value,
+    categoria:  document.getElementById('concepto-categoria').value,
+    estado:     estadoForzado || document.getElementById('concepto-estado').value,
+    definicion: document.getElementById('concepto-definicion').value,
+    fuente:     document.getElementById('concepto-fuente').value,
+  };
+  if (!datos.termino) { alert('El término es obligatorio'); return; }
+  try {
+    const { collection, addDoc, doc, setDoc, serverTimestamp } = window._fs;
+    if (id) {
+      await setDoc(doc(db, 'conceptos', id), { ...datos, actualizado: serverTimestamp() }, { merge: true });
+    } else {
+      await addDoc(collection(db, 'conceptos'), { ...datos, creado: serverTimestamp() });
+    }
+    cerrarModal('modal-concepto');
+    mostrarAlerta('Concepto guardado', 'success');
+    cargarConceptos();
+    document.getElementById('concepto-id').value = '';
+    document.getElementById('modal-concepto-titulo').textContent = 'Nuevo concepto';
+  } catch(e) {
+    mostrarAlerta('Error al guardar: ' + e.message, 'error');
+  }
+};
+
+window.guardarArticulo = async function(estadoForzado) {
+  const id = document.getElementById('articulo-id').value;
+  const datos = {
+    titulo:    document.getElementById('articulo-titulo').value,
+    categoria: document.getElementById('articulo-categoria').value,
+    estado:    estadoForzado || document.getElementById('articulo-estado').value,
+    contenido: document.getElementById('articulo-contenido').value,
+    enlace:    document.getElementById('articulo-enlace').value,
+  };
+  if (!datos.titulo) { alert('El título es obligatorio'); return; }
+  try {
+    const { collection, addDoc, doc, setDoc, serverTimestamp } = window._fs;
+    if (id) {
+      await setDoc(doc(db, 'actualidad', id), { ...datos, actualizado: serverTimestamp() }, { merge: true });
+    } else {
+      await addDoc(collection(db, 'actualidad'), { ...datos, creado: serverTimestamp() });
+    }
+    cerrarModal('modal-articulo');
+    mostrarAlerta('Artículo guardado', 'success');
+    cargarActualidad();
+    document.getElementById('articulo-id').value = '';
+    document.getElementById('modal-articulo-titulo').textContent = 'Nuevo artículo';
+  } catch(e) {
+    mostrarAlerta('Error al guardar: ' + e.message, 'error');
+  }
+};
+
+</script>
+
+<script>
+// ════════════════════════════════════
+// LOGIN
+// ════════════════════════════════════
+// CAMBIA ESTA CONTRASEÑA POR LA QUE QUIERAS
+const ADMIN_PASSWORD = 'neutralito2026';
+
+function doLogin() {
+  const val = document.getElementById('pwd-input').value;
+  if (val === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'block';
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('pwd-input').value = '';
+  }
+}
+function logout() {
+  document.getElementById('admin-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pwd-input').value = '';
+}
+
+// ════════════════════════════════════
+// NAVEGACIÓN
+// ════════════════════════════════════
+const TITULOS = {
+  cis: 'Barómetro CIS', elecciones: 'Elecciones',
+  partidos: 'Guía de partidos', conceptos: 'Conceptos', actualidad: 'Actualidad'
+};
+function navTo(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  el.classList.add('active');
+  document.getElementById('topbar-title').textContent = TITULOS[page];
+}
+
+// ════════════════════════════════════
+// MODALES
+// ════════════════════════════════════
+function abrirModalCIS() {
+  window._cisDatosActuales = null;
+  document.getElementById('cis-csv-resultado').style.display = 'none';
+  document.getElementById('modal-cis').classList.add('open');
+}
+function abrirModalEleccion() {
+  document.getElementById('eleccion-id').value = '';
+  document.getElementById('eleccion-nombre').value = '';
+  document.getElementById('eleccion-fecha').value = '';
+  document.getElementById('eleccion-ccaa').value = '';
+  document.getElementById('modal-eleccion-titulo').textContent = 'Nueva elección';
+  document.getElementById('modal-eleccion').classList.add('open');
+}
+function abrirModalPartido() {
+  document.getElementById('partido-id').value = '';
+  document.getElementById('partido-siglas').value = '';
+  document.getElementById('partido-nombre').value = '';
+  document.getElementById('partido-color').value = '#888888';
+  document.getElementById('partido-web').value = '';
+  document.getElementById('partido-twitter').value = '';
+  document.getElementById('partido-telegram').value = '';
+  document.getElementById('partido-logo').value = '';
+  document.getElementById('modal-partido-titulo').textContent = 'Añadir partido';
+  document.getElementById('modal-partido').classList.add('open');
+}
+function abrirModalConcepto() {
+  document.getElementById('concepto-id').value = '';
+  document.getElementById('concepto-termino').value = '';
+  document.getElementById('concepto-definicion').value = '';
+  document.getElementById('concepto-fuente').value = '';
+  document.getElementById('modal-concepto-titulo').textContent = 'Nuevo concepto';
+  document.getElementById('modal-concepto').classList.add('open');
+}
+function abrirModalArticulo() {
+  document.getElementById('articulo-id').value = '';
+  document.getElementById('articulo-titulo').value = '';
+  document.getElementById('articulo-contenido').value = '';
+  document.getElementById('articulo-enlace').value = '';
+  document.getElementById('modal-articulo-titulo').textContent = 'Nuevo artículo';
+  document.getElementById('modal-articulo').classList.add('open');
+}
+function cerrarModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ════════════════════════════════════
+// CSV PROCESADO
+// ════════════════════════════════════
+const COLORES_PARTIDOS = {
+  'PSOE':'#E3000F','PP':'#0056A2','VOX':'#63BE21','Sumar':'#DD0073',
+  'Podemos':'#6A0DAD','ERC':'#F5A623','EH Bildu':'#006400',
+  'Se Acabó la Fiesta':'#1A1A1A','Junts':'#003DA5','BNG':'#5B8B2A',
+  'EAJ-PNV':'#007A3D','PACMA':'#FF6900'
+};
+const ESPECIALES = new Set(['No sabe todavía','No votaría','Voto nulo','En blanco','N.C.','Otro partido']);
+
+function procesarCSV(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const mes = document.getElementById('cis-mes').value;
+  if (!mes) { alert('Introduce primero el mes del barómetro'); return; }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const lines = e.target.result.trim().split('\n');
+    const header = lines[0].split(';').map(h => h.trim().replace(/^\uFEFF/,''));
+    const colIdx = header.findIndex(h => h.includes('INTENCIONG'));
+    if (colIdx === -1) { alert('No se encontró la columna INTENCIONG'); return; }
+
+    const conteo = {};
+    let total = 0;
+    for (let i = 1; i < lines.length; i++) {
+      const val = (lines[i].split(';')[colIdx]||'').trim();
+      if (!val) continue;
+      conteo[val] = (conteo[val]||0) + 1;
+      total++;
+    }
+
+    const indecisos  = conteo['No sabe todavía']||0;
+    const abstencion = conteo['No votaría']||0;
+    const nulo       = conteo['Voto nulo']||0;
+    const blanco     = conteo['En blanco']||0;
+    const nc         = conteo['N.C.']||0;
+
+    const partidos = Object.entries(conteo)
+      .filter(([k]) => !ESPECIALES.has(k))
+      .sort((a,b) => b[1]-a[1])
+      .map(([siglas, votos]) => ({ siglas, color: COLORES_PARTIDOS[siglas]||'#8a8a8a', votos }));
+
+    const [año, mes_n] = mes.split('-');
+    const nombreMes = new Date(año, parseInt(mes_n)-1).toLocaleString('es-ES', { month:'long', year:'numeric' });
+    const nombreCapital = nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
+
+    window._cisDatosActuales = {
+      mes: nombreCapital,
+      fecha: mes,
+      muestra: total,
+      estado: document.getElementById('cis-estado').value,
+      partidos, blanco, nulo, indecisos, abstencion, nc
+    };
+
+    document.getElementById('cis-csv-msg').textContent =
+      `CSV procesado: ${total.toLocaleString('es-ES')} encuestados · ${partidos.length} partidos detectados`;
+    document.getElementById('cis-csv-resultado').style.display = 'block';
+
+    let html = '<div style="margin-top:4px">';
+    partidos.forEach(p => {
+      const pct = ((p.votos/total)*100).toFixed(1);
+      html += `<div class="partido-row">
+        <div class="partido-color" style="background:${p.color}"></div>
+        <span class="partido-siglas">${p.siglas}</span>
+        <span class="partido-votos">${p.votos}</span>
+        <span class="partido-pct">${pct}%</span>
+      </div>`;
+    });
+    [['Indecisos',indecisos],['Abstención',abstencion],['En blanco',blanco],['Nulo',nulo],['N.C.',nc]].forEach(([n,v]) => {
+      html += `<div class="partido-row" style="opacity:0.6">
+        <div class="partido-color" style="background:#ccc"></div>
+        <span class="partido-siglas" style="font-family:'IBM Plex Sans',sans-serif;font-weight:400;font-size:12px">${n}</span>
+        <span class="partido-votos">${v}</span>
+        <span class="partido-pct">${((v/total)*100).toFixed(1)}%</span>
+      </div>`;
+    });
+    html += '</div>';
+    document.getElementById('cis-csv-preview').innerHTML = html;
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+// ════════════════════════════════════
+// PREVIEW CIS
+// ════════════════════════════════════
+function previewCIS() {
+  const datos = window._cisDatosActuales;
+  if (!datos) { alert('Primero sube un CSV o introduce los datos'); return; }
+  mostrarPreviewCIS(datos);
+}
+
+function mostrarPreviewCIS(d) {
+  const total = d.muestra;
+  const totalPartidos = (d.partidos||[]).reduce((s,p) => s+p.votos, 0);
+  const pct = (v,b) => b>0 ? ((v/b)*100).toFixed(1)+'%' : '—';
+
+  let html = `
+    <div class="preview-header">
+      <div class="preview-label">Barómetro CIS · ${d.mes}</div>
+      <div class="preview-title">El CIS sin maquillaje</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+      <div style="background:var(--sup2);padding:12px;border-radius:2px;text-align:center">
+        <div style="font-family:'Oswald',sans-serif;font-size:22px;font-weight:700">${total.toLocaleString('es-ES')}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--texto2);margin-top:3px">Muestra total</div>
+      </div>
+      <div style="background:var(--sup2);padding:12px;border-radius:2px;text-align:center">
+        <div style="font-family:'Oswald',sans-serif;font-size:22px;font-weight:700">${pct(d.indecisos,total)}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--texto2);margin-top:3px">Indecisos</div>
+      </div>
+      <div style="background:var(--sup2);padding:12px;border-radius:2px;text-align:center">
+        <div style="font-family:'Oswald',sans-serif;font-size:22px;font-weight:700">${pct(d.abstencion,total)}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--texto2);margin-top:3px">Abstención</div>
+      </div>
+    </div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--texto2);margin-bottom:10px">Vista Neutralito — % sobre muestra total</div>`;
+
+  const todos = [
+    ...(d.partidos||[]),
+    {siglas:'En blanco',color:'#cccccc',votos:d.blanco||0},
+    {siglas:'Nulo',color:'#e0e0e0',votos:d.nulo||0},
+    {siglas:'Indecisos',color:'#8a8a8a',votos:d.indecisos||0},
+    {siglas:'Abstención',color:'#C0C0C0',votos:d.abstencion||0},
+  ].sort((a,b) => b.votos-a.votos);
+
+  const maxPct = Math.max(...todos.map(p => p.votos/total*100));
+  todos.forEach(p => {
+    const v = (p.votos/total*100).toFixed(1);
+    const w = maxPct>0 ? (p.votos/total*100/maxPct*100) : 0;
+    html += `<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <span style="font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;width:110px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.siglas}</span>
+      <div style="flex:1;background:rgba(0,0,0,0.06);height:22px;position:relative">
+        <div style="position:absolute;left:0;top:0;bottom:0;width:${w}%;background:${p.color};transition:width 0.4s"></div>
+        <span style="position:absolute;left:${w}%;padding-left:6px;top:50%;transform:translateY(-50%);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;white-space:nowrap">${v}%</span>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('preview-cis-contenido').innerHTML = html;
+  document.getElementById('modal-preview-cis').classList.add('open');
+}
+
+// ════════════════════════════════════
+// TABS CIS MODAL
+// ════════════════════════════════════
+function switchTabCIS(tab) {
+  document.getElementById('tab-csv-btn').classList.toggle('active', tab==='csv');
+  document.getElementById('tab-manual-btn').classList.toggle('active', tab==='manual');
+  document.getElementById('cis-tab-csv').style.display = tab==='csv' ? 'block' : 'none';
+  document.getElementById('cis-tab-manual').style.display = tab==='manual' ? 'block' : 'none';
+}
+
+// PARTIDOS MANUAL
+let filasPartido = 0;
+function añadirFilaPartido() {
+  filasPartido++;
+  const div = document.createElement('div');
+  div.style.cssText = 'display:grid;grid-template-columns:80px 1fr 60px 36px;gap:8px;margin-bottom:8px;align-items:center';
+  div.innerHTML = `
+    <input class="form-input" placeholder="Siglas" id="mp-siglas-${filasPartido}">
+    <input class="form-input" type="color" value="#888888" id="mp-color-${filasPartido}" style="height:38px;padding:4px">
+    <input class="form-input" type="number" placeholder="Votos" id="mp-votos-${filasPartido}">
+    <button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">×</button>`;
+  document.getElementById('cis-partidos-manual').appendChild(div);
+}
+
+// ════════════════════════════════════
+// ALERTAS GLOBALES
+// ════════════════════════════════════
+function mostrarAlerta(msg, tipo) {
+  const el = document.getElementById('global-alert');
+  el.className = 'alert alert-' + tipo;
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 3500);
+}
+</script>
+
+</body>
+</html>

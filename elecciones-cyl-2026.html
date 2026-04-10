@@ -1538,21 +1538,32 @@ function renderTablaEscanos() {
 document.addEventListener("DOMContentLoaded", function() {
   actualizarContadores();
   renderPartidos();
-  // Abrir Resultados por defecto
+
+  const hash = window.location.hash;
   const guia = document.getElementById('seccion-guia');
   const resultados = document.getElementById('seccion-resultados');
-  guia.style.display = 'none';
-  resultados.classList.add('visible');
-  document.querySelectorAll('.apartado-tab').forEach(t => t.classList.remove('active'));
-  document.querySelector('.apartado-tab[onclick*="resultados"]').classList.add('active');
-  // Activar y renderizar vista oficial
-  document.querySelectorAll('.vista-tab').forEach(t => t.classList.remove('active'));
-  const primeraVista = document.querySelector('.vista-tab');
-  if (primeraVista) primeraVista.classList.add('active');
-  document.querySelectorAll('.resultados-datos-wrap').forEach(d => d.classList.remove('visible'));
-  document.getElementById('vista-oficial').classList.add('visible');
-  renderVistaOficial();
-  renderTablaEscanos();
+
+  if (hash === '#guia') {
+    // Abrir Guía de Partidos
+    guia.style.display = 'block';
+    resultados.classList.remove('visible');
+    document.querySelectorAll('.apartado-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.apartado-tab[onclick*="guia"]').classList.add('active');
+  } else {
+    // Abrir Resultados por defecto (o si hash === '#resultados')
+    guia.style.display = 'none';
+    resultados.classList.add('visible');
+    document.querySelectorAll('.apartado-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.apartado-tab[onclick*="resultados"]').classList.add('active');
+    // Activar y renderizar vista oficial
+    document.querySelectorAll('.vista-tab').forEach(t => t.classList.remove('active'));
+    const primeraVista = document.querySelector('.vista-tab');
+    if (primeraVista) primeraVista.classList.add('active');
+    document.querySelectorAll('.resultados-datos-wrap').forEach(d => d.classList.remove('visible'));
+    document.getElementById('vista-oficial').classList.add('visible');
+    renderVistaOficial();
+    renderTablaEscanos();
+  }
 });
 
 
